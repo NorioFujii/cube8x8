@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="apple-mobile-web-app-title" content="Rubik's Cube Notation"/>
+        <meta name="viewport" content="width=320,
+          height=480,
+          initial-scale=1.0,
+          minimum-scale=1.0,
+          maximum-scale=2.0,
+          user-scalable=yes" />
+	<meta name="description" content="3D Rubik's Cube Notation widget"/>
+	<meta name="Keywords" content="Rubik's,Cube,notation">	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script src="js/jquery.min.js"></script>
+	<SCRIPT SRC="js/navigate55.js"></SCRIPT>
+	<SCRIPT SRC="js/revelator55.js"></SCRIPT>
+	<SCRIPT SRC="js/dragRotation.js"></SCRIPT>
+	<script src="js/colorPick4.js"></script>
+      <link rel="stylesheet" href="https://unpkg.com/microtip/microtip.css">
+	<link rel="stylesheet" type="text/css" href="css/faceStyle.css" />
+	<link rel="stylesheet" type="text/css" href="css/colorPick.css" />
+	<link rel="stylesheet" type="text/css" href="css/RBstyle3.css" />
+	<link rel="stylesheet" type="text/css" href="css/RBstyle55.css" id="dynaCSS" />
+	<title>3D Rubik's Cube Notation Widget 2x2 - 5x5</title>
+</head>
+<body onunload="parent.swin=null;">
+   <div class="flex_test-box">
+    　<div class="flex_test-item">
+	<img src="images/otugeTitle.png" width=220 onclick='location.href="navigation-3d.html"' title="3x3x3 ⇔ 2x2-5x5"><br>
+        <span class="toggle_button">
+          <input id="toggle1" class="toggle_input" type='radio' name="cube_T" onclick="SelCubeT(2)" />
+          <label for="toggle1" class="toggle_label" />2x2</label></span>
+        <span class="toggle_button">
+          <input id="toggle2" class="toggle_input" type='radio' name="cube_T" onclick="SelCubeT(3)" />
+          <label for="toggle2" class="toggle_label" />3x3</label></span>
+        <span class="toggle_button">
+          <input id="toggle3" class="toggle_input" type='radio' name="cube_T" onclick="SelCubeT(4)" />
+          <label for="toggle3" class="toggle_label" />4x4</label></span>
+        <span class="toggle_button">
+          <input id="toggle4" class="toggle_input" type='radio' name="cube_T" onclick="SelCubeT(5)" checked />
+          <label for="toggle4" class="toggle_label" />5x5</label></span>
+
+	<div class="wrap">
+		<div class="cube">
+			<div id="cubeFields">
+			</div>
+			<div id="rotLayer">
+			</div>
+		</div>
+	</div>
+        <p id="lskip" style="display: none;"></p><br>
+
+        <div id="parent" align=left style="display: none">
+            <video autoplay width="240" height="200"></video>
+            <div id="guide"></div>
+            <canvas width="240" height="200"></canvas>
+  <div>
+  <table width="230px" border="2" align=left>
+  <tbody style="font-size: small">
+      <tr> <th scope="col" width="30px">
+          RGB
+        </th>
+        <th scope="col" width="150px">
+          設定スライダー
+        </th>
+        <th scope="col" width="30px">
+          数値<br>
+          (<256)
+        </th>
+  </tr>
+      <tr>
+        <th style="color: black" scope="row" nowrap>
+         (白Ｂ)
+        </th>
+        <td>
+          <input id="range_rgb_w" type="range" min="0" max="255" value="255" tabindex="-1" onInput="onInputRange('range_rgb_w', 'rgb_w')" onmouseup="this.blur()" >
+        </td>
+        <td>
+          <input id="rgb_w" type="number" step="1" min="0" max="255" value="255" size=2 onInput="onInputRGB()" >
+        </td>
+  </tr>
+      <tr>
+        <th style="color: #FF0000" scope="row" valign=top>
+          R(赤)
+        </th>
+        <td>
+          <input id="range_rgb_r" type="range" min="0" max="255" value="255" tabindex="-1" onInput="onInputRange('range_rgb_r', 'rgb_r')" >
+        </td>
+        <td>
+          <input id="rgb_r" type="number" step="1" min="0" max="255" value="255" size=2 onInput="onInputRGB()" >
+        </td>
+  </tr>
+      <tr>
+        <th style="color: #00FF00" scope="row">
+          G(緑)
+        </th>
+        <td>
+          <input id="range_rgb_g" type="range" min="0" max="255" value="255" tabindex="-1" onInput="onInputRange('range_rgb_g', 'rgb_g')" >
+        </td>
+        <td>
+          <input id="rgb_g" type="number" step="1" min="0" max="255" value="255" size=2 onInput="onInputRGB()" >
+        </td>
+  </tr>
+      <tr>
+        <th style="color: #0000FF" scope="row" valign=top>
+          B(青)
+        </th>
+        <td>
+          <input id="range_rgb_b" type="range" min="0" max="255" value="255" tabindex="-1" onInput="onInputRange('range_rgb_b', 'rgb_b')" >
+        </td>
+        <td>
+          <input id="rgb_b" type="number" step="1" min="0" max="255" value="255" size=2 onInput="onInputRGB()" >
+       </td>
+  </tr>
+      <tr>
+        <th style="color: orange" scope="row">
+          (橙比)
+        </th>
+        <td>
+          <input id="range_rgb_o" type="range" min="0" max="255" value="255" tabindex="-1" onInput="onInputRange('range_rgb_o', 'rgb_o')" >
+        </td>
+        <td>
+          <input id="rgb_o" type="number" step="1" min="0" max="255" value="255" size=2 onInput="onInputRGB()" >
+        </td>
+  </tr>
+      <tr>
+        <form name="frm">
+        <td colspan=3 align=baseline>
+          Camera:<input type="radio" name="camsel" value="0">1&nbsp;<input type="radio" name="camsel" value="1" checked>2&nbsp;<input type="radio" name="camsel" value="2">3&nbsp;
+          <textarea cols="4" rows="1" name="data"></textarea>
+          <textarea cols="28" rows="3" name="cams" id="cams"></textarea>
+        </td>
+        </form>
+  </tr>
+  </tbody>
+  </table></div><!-- end of Table down shift -->
+        </div><!-- end of parent hidden -->
+        <table><tr rowspan=2><td>&nbsp;</td><td id="comment" class="lowerL" width=190px height=40px>&nbsp;</td></tr><tr><td id="turn" class="lowerL" width=48px>&nbsp;</td>&nbsp;&nbsp;<td id="rotate" class="lowerL"></td></tr><tr></table>
+      </div><!-- end of flex_test-item -->
+      <div class="flex_test-item">
+	<div id="display" class="is-hidden" width="240">
+          <div><h2>実キューブの色の反映</h2></div>
+          <p align="left" width="240">　　<span id="yp">＋Ｙ</span>回<span id="ym">転－</span>　<span id="xp">＋Ｘ</span>回<span id="xm">転－</span></p><br>
+          <div id="game"></div>
+          <div id="gamePad"></div><!-- Height fixed -->
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="result">
+<script type="text/javascript">
+for (var y = 0; y < 6; y++) {
+	document.write('<div class="row">');
+	for (var x = 0; x < 6; x++) {
+		document.write('<div class="r" id="r'+y+x+'"></div>');
+	}
+	document.write('</div>');
+}
+</script>
+     <script type="text/javascript" src="js/faceMain.js"></script>
+
+           <button onclick="start()" id="standby" style="font-size: large; background-color: orange">撮像</button>
+           <button onclick="stop()" style="font-size: large; background-color: yellow">修正</button>
+           <button onclick="faceTo()" style="font-size: large; background-color: lime">反映</button><br><br>
+        </div><!-- end of result -->
+      </div><!-- display hidden -->
+
+	<div class="commands" align=left><a href="お告げによるルービックキューブ解法.html" target="_blank">お告げソルブ解説</a>
+　<a href="お告げナビのインストールについて.pdf" target="_blank">Navi V5.2</a> <img src="/icon/home.gif" width=18 align=bottom onclick='window.open("images/V4拡張.png","_blank")' title="V5機能">
+	</div><!-- end of commands -->
+        <br>
+        <div class="commands" id="statusBlk" style="border: 1px solid gray; width: 256px; height: 236px; display: none;"><!-- 進行状況表　height: 236px;/158px -->
+	<span id="STnot2x2" style="display:block;">
+		<div class="statusExplain" >疑似3x3構成:</div>
+		<button class="statusL" type=button id="proc40" disabled>中央四角集約</button>
+		<button class="statusL" type=button id="proc42" disabled>エッジペア探索</button>
+		<button class="statusL" type=button id="proc44" disabled>エッジ構成結合</button>
+		<div class="statusExplain" >第二層以下構成:</div>
+	</span>
+		<button class="statusL" type=button id="proc00" disabled>&nbsp;白クロス形成&nbsp;</button>
+		<button class="statusL" type=button id="proc04" disabled>&nbsp;マワシ型完成&nbsp;</button>
+		<button class="statusL" type=button id="proc16" disabled>&nbsp;白四肢・脚立&nbsp;</button>
+		<div class="statusExplain" >上層枠+魚十字構成:</div>
+		<button class="statusL" type=button id="proc18" disabled>四コーナー整合</button>
+		<button class="statusL" type=button id="proc20" disabled>時のお告げ回転</button>
+		<button class="statusL" type=button id="proc24" disabled>黄十字&nbsp;魚形成</button>
+		<div class="statusExplain" >上位層整合:</div>
+		<button class="statusL" type=button id="proc26" disabled>最上層黄色一面</button>
+		<button class="statusL" type=button id="proc28" disabled>HZ交換&nbsp;Parity</button>
+		<button class="statusL" type=button id="proc32" disabled>エッジ移動完成</button>
+        </div>
+
+	<div class="commands">
+		<div class="commandExplain" onDBLclick='faceNum()'>拡張機能:<span id="hdnstop" style="display: none;">　　　　一時停止:&nbsp;<input type=text id="stop" size=1 value="0"></span></div>
+		<button class="commandb" type=button onclick="faceFloat()" role="tooltip" data-microtip-position="bottom" aria-label="裏側をのぞき見する" data-microtip-size="small">三面鏡</button>
+		<button class="commandb" type=button onclick="SelCubeT()">初期化</button>
+		<button class="commandb" type=button onclick="scramble()" id="scrm3x3">スクランブル</button>
+		<button class="commandb" type=button onclick="pause()" style="width: 33px">休止</button>
+		<button class="commandb" type=button onclick="accel()" style="width: 30px">変速</button>
+		<button class="commandb" type=button onclick="quickIn()" style="width: 119px">記号列入力( ,or sp)</button>
+		<button class="commandb" type=button onclick="Solve()" id="solveX" >お告げソルブ</button>
+		<button class="commandb" type=button onclick="demo()" style="width: 30px" role="tooltip" data-microtip-position="bottom" aria-label="スクランブルとソルブを繰り返す">デモ</button>
+	<span id="all4x4" style="display:block;">
+		<button class="commandb" type=button onclick="parityAlt()" id="parity" disabled>パリティ補正</button>
+		<button class="commandb" type=button onclick="edgeExchg()" id="edgeEx" disabled>エッジ交換</button>
+		<button class="commandb" type=button onclick="location.href='navigation-3d55.html'" id="solve3" disabled>3x3論理</button>
+		<button class="commandb" type=button onclick="reserve()">予備&nbsp;</button>
+	</span>
+	<span id="all3x3" style="display:block;">
+		<button class="commandb" type=button onclick="setFaces()">実キューブ反映</button>
+		<button class="commandb" type=button onclick="saveCube()">&nbsp;状態保存&nbsp;</button>
+		<button class="commandb" type=button onclick="restCube()">状態高速再現</button>
+	</span>
+		<div class="commandExplain"> 回転ログ:<input name="tlog" type="checkbox" onchange="TurnLog()">蓄積　<input name="logdisp" type="button" value="DUMP" onclick="dumpRot()"><input name="logdisp" type="button" value="COPY" onclick="copyRot()"> </div>
+	</div><!-- end of commands -->
+      </div><!-- end of flex_test-item -->
+      <div class="flex_test-item">
+        <div class="commands" style="border: 1px solid gray;">
+		<div class="commandExplain">各面時計廻し:</div>
+		<div class="rotateU">U</div>
+		<div class="rotateL">L</div>
+		<div class="rotateF">F</div>
+		<div class="rotateR">R</div>
+		<div class="rotateB">B</div>
+		<div class="rotateD">D</div>
+
+		<div class="commandExplain">各面反時計廻し:</div>
+		<div class="rotateUi">U'</div>
+		<div class="rotateLi">L'</div>
+		<div class="rotateFi">F'</div>
+		<div class="rotateRi">R'</div>
+		<div class="rotateBi">B'</div>
+		<div class="rotateDi">D'</div>
+	<span id="not2x2" style="display:block;">
+		<div class="commandExplain">内面一層時計廻し:</div>
+		<div class="rotateu">u</div>
+		<div class="rotatel">l</div>
+		<div class="rotatef">f</div>
+		<div class="rotater">r</div>
+		<div class="rotateb">b</div>
+		<div class="rotated">d</div>
+
+		<div class="commandExplain">内面一層反時計廻し:</div>
+		<div class="rotateui">u'</div>
+		<div class="rotateli">l'</div>
+		<div class="rotatefi">f'</div>
+		<div class="rotateri">r'</div>
+		<div class="rotatebi">b'</div>
+		<div class="rotatedi">d'</div>
+
+		<div class="commandExplain">中央連層正逆廻し: </div>
+		<div class="rotateE">E</div>
+		<div class="rotateEi">E'</div>
+                <div class="rotateC">Mc</div>
+		<div class="rotateCi">Mc'</div>
+		<div class="rotateM">M</div>
+		<div class="rotateMi">M'</div>
+	</span>
+		<div class="commandExplain">キューブ全体回転: </div>
+		<div class="rotateX">X</div>
+		<div class="rotateXi">X'</div>
+		<div class="rotateY">Y</div>
+		<div class="rotateYi">Y'</div>
+		<div class="rotateZ">Z</div>
+		<div class="rotateZi">Z'</div>
+		
+		<div class="commandExplain">キューブ全体微回転 (視点変更):</div>
+		<div class="rotateXview">X&#x21bb;</div>
+		<div class="rotateXiview">X'&#x21bb;</div>
+		<div class="rotateYview">Y&#x21bb;</div>
+		<div class="rotateYiview">Y'&#x21bb;</div>
+		<div class="rotateZview">Z&#x21bb;</div>
+		<div class="rotateZiview">Z'&#x21bb;</div>
+	<form name=opt>
+		<div class="commandExplain" role="tooltip" data-microtip-position="bottom" aria-label="ツールチップの参照は、ボタンを長押ししてください">マクロ機能回転:</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;R' U' F' U F R&quot;,&quot;R' U' F' U F R U' R' U' F' U F R&quot;,opt.sayu.value)" aria-label="くるくるムーブ コーナーの対角交換でも使え、uを挟み２回で３時ムーブへ" data-microtip-size="small">&#x21bb;&#x21bb;Ｍ</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;R U R' U'&quot,&quot;R U R' U' R U R' U' R U R' U'&quot;,opt.sayu.value)" aria-label="選択の正逆セクシームーブ３回" data-microtip-size="small">SX3Ｍ</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;F R U R' U' F' U' R' U' F' U F R&quot;)" aria-label="時計読み針なし時のムーブ ヒント：FRUruf対角交換６時ムーブ" data-microtip-size="medium">零Ｍ</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;M2 U M U2 M' U M2&quot;,&quot;M2 U' M U2 M' U' M2&quot;,opt.sayu.value)" aria-label="選択の左右エッジお迎え(Uパーム) 　　ヒント：奥から周って前へ" data-microtip-size="medium">LR迎</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;L R' U' R U L' U' R' U R&quot;)" aria-label="右側二隅のコーナー隣接交換 ヒント：LruRUlurUR" data-microtip-size="medium">隣換</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;M2 U M2 U2 M2 U M2&quot;)" aria-label="十字エッジ交換(Hパーム) ヒント：深く深く飛んで深く深く" data-microtip-size="medium">十換</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;M' U M2 U M2 U M' U2 M2 U'&quot;)" aria-label="斜め二組エッジ交換(Zパーム) ヒント：浅く深く深く浅く深く" data-microtip-size="small">斜換</div>
+                <div class="rotateMac2" style="width: 60px;" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;r2 B2 U2 l U2 r' U2 r U2 F2 r F2 l' B2 r2&quot;)" aria-label="OLLパリティ補正 　　　覚え方：ミッツオツウツ、ヒザウツ,ミサウツ,ミウウッツ、マツミウ,マツヒウ、オツミッツ" data-microtip-size="medium">Ｏ<br>パリティ</div>
+                <div class="rotateMac2" style="width: 60px;" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;X' l2 U2 F2 l2 F2 U2 l2 X&quot;)" aria-label="PLLパリティ補正 　　　覚え方：１８０°でルーフルフール" data-microtip-size="medium">Ｐ<br>パリティ</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;L U L' U L U2 L' U&quot;,&quot;R' U' R U' R' U' 2R U' R U&quot;,opt.sayu.value)" aria-label="選択の左右くるくるパーム">LR　&#x21bb;&#x21bb;</div>
+<div class="commandExplain"> Y方向:<input name="noy" type="checkbox">持替止　操作:<input name="sayu" type="radio" value="L">左 <input name="sayu" type="radio" value="R" checked>右</div>
+	</form></div><!-- end of commands -->
+	</div><!-- end of result -->
+    </div><!-- end of flex_test-item -->
+</div><!-- end of flex_test-box -->
+	<br><br>
+</body>
+
+</html>

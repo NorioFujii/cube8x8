@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="認知症予防,簡単,５分" />
+<title>お告げによるルービックキューブ4x4脱力解法</title>
+<meta property="og:url"                content="https://mori1-hakua.tokyo/RCeasy.html" />
+<meta property="og:type"               content="article" />
+<meta property="og:title"              content="ルービックキューブ簡単解法" />
+<meta property="og:description"        content="認知症予防,簡単,５分" />
+<meta property="og:image"              content="https://mori1-hakua.tokyo/images/CUBE4.png" />
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<style type=text/css>
+summary:hover, button:hover {
+  cursor: pointer; /* カーソルを指マークに */
+  background-color: #EFEFEF;
+}
+</style>
+<script type=text/javascript>
+var ClipDT  = "";
+var swin = null;
+var Rotates = "";
+var RotatesG = "";
+var RotatesH = "";
+var solrote = new Array(), note = new Array();
+solrote[0] = "";
+solrote[1] = "**,*#0812,R,*#1819,U2,B,*#3741,L-,*#3435,D,F2";
+solrote[2] = "X2,F,*#0509,U-,*#3435,F-";
+solrote[3] = "F-,*#0812,U2,F,R,U-2,R-";
+solrote[4] = "*#3435,U,B-,U2,B,U-2,B-,U,B,U-,B-,U,B2,U-,B-";
+solrote[5] = "*#0509,U,L,U2,*#3435,L-,U,L,U,L-,U,L,U-,*#0509,L-";
+solrote[6] = "*#1652,R-,U-,F-,U,F,R";
+solrote[7] = "*#0812,R-,U-,F-,U,F,R,*#1415,F-,U-,L-,U,L,F";
+solrote[8] = "Y,*#3435,M2,U,M-,U2,M,U,M2,Y2,*#3435,M2,U-,M-,U2,M,U-,M2";
+solrote[9] = "U,*#0105,L,U,L-,U,L,U2,L-,U";
+note[1] = "白面十字揃え";
+note[2] = "ものぐさ連帰(青橙)";
+note[3] = "ものぐさ連帰(青赤)";
+note[4] = "ものぐさ連帰(赤緑)";
+note[5] = "ものぐさ連帰(緑橙)";
+note[6] = "対角交換";
+note[7] = "くるくるムーブ２回";
+note[8] = "お迎えパーム２回";
+note[9] = "最終くるくるパー厶";
+
+function ptnset(i) {
+    var pic = document.getElementsByName('solve')[i].getElementsByTagName('p')[0];
+    if ( pic.innerHTML=="") {
+      pic.innerHTML = '　<button type="button" onclick="fwdRot(this)">'+ (solrote[i+1]==""?"0":String(solrote[i+1].replace(/\*\*,/,"").split(',').length)-solrote[i+1].split("#").length+1) +
+                      "手：</button> " + solrote[i+1].replace(/-/g,"'").replace(/\*#\d+,/g,"").replace(/,/g," ") +' <button type="button" onclick="rvsRot(this)">戻す</button><br>　';
+      for (var ar of solrote[i+1].split(',')) {
+        if ((ar!="") && (ar.slice(0,1)!="*"))
+            pic.innerHTML += '<img src="https://mori1-hakua.tokyo/images/'+ar+'.gif">';
+      }
+    }
+}
+function setLsner() {
+   return;
+   for (var i=0;i<9;i++) {
+      var pic = document.getElementsByName('solve')[i];
+      eval('pic.addEventListener("toggle",function() {ptnset('+i+');})');
+   }
+   RotatesG = "*0 L' R2 U2 F2 U2 F2 D' R2 D' F U' L D' R D' F' L U2 L' B' B' D' B R F' R' X X ** " ;
+   cube3dg.open ("navigation-3d44.html","cube3dg", 'dependent=yes,scrollbars=no');
+   RotatesH = "*0 X X Y' U' L U2 L' U' L U' L' ** " ;
+   setTimeout('cube3dh.open ("navigation-3d44.html","cube3dh", "dependent=yes,scrollbars=no")',200);
+   let frm = document.getElementsByName("cube3df")[0];
+        if (window.outerWidth>600) frm.style.width="620px",frm.style.height="440px";
+        else                       frm.style.width="380px",frm.style.height="640px";
+   window.open ("navigation-3d44.html","cube3df", 'dependent=yes,scrollbars=no');
+   if (location.search.slice(0,6)=="?Renki") {
+      document.getElementById('renki').open = "open";
+      location.hash = "#renki";
+   }
+}
+function addRot1() {
+    cube3dg.FaceF = "f";
+    RotatesG = "*#0452 *#3741 *#3741 L' U2 R' U' R L U' R' U R *#6064 *#6064";
+}
+function addRot2() {
+    cube3dg.initCube();
+    RotatesG = "*0 L' R2 U2 F2 U2 F2 D' R2 D' F U' L D' R D' F' L U2 L' B' B' D' B R F' R' X X ** " ;
+    navigator.clipboard.writeText(RotatesG+"*#0452 *#3741 *#3741 L' U2 R' U' R L U' R' U R *#6064 *#6064");
+}
+function addRot3() {
+    RotatesG = "*#3649 U R F U F' R' *#4145 *#4145 U' F' U F *#1333 U' *#0509 L U L' U L U' L' *#7680 U R U2 R' *#6667 U2 F' U2 F U' F' U F *#4448 *#4448"; //
+    navigator.clipboard.writeText(RotatesG);
+}
+function goKRKR() {
+    cube3dh.FaceF = "f";
+    RotatesH = "*#010509171819 L U L' U L U2 L' U *#0102030405060708091011121314151617181920333435364950515265666768";
+    navigator.clipboard.writeText(RotatesH);
+}
+function goKRKR2() {
+    cube3dh.FaceF = "f";
+    cube3dh.initCube();
+    RotatesH = "*0 X X Y' U' L U2 L' U' L U' L' ** " ; //
+    navigator.clipboard.writeText(RotatesH);
+}
+function openSwin(obj,lang="jp") {
+//    obj.parentElement.parentElement.open = "open";
+    Rotates = "";
+    
+    swin = window.open ((lang=="en"?"https://noriofujii.github.io/Cubing/unfold-cube4.html":"navigation-3d44.html"),
+           "cube3d", 'height=600,width=380,dependent=yes,left='+(window.screenX+400)+',scrollbars=no');
+}
+function openAll(obj,mode="open") {
+    for (var detal of obj.getElementsByTagName("details"))
+        detal.open = mode;
+//        if (mode=="") detal.removeAttribute('open');
+}
+function fwdRot(obj){
+    var seq = obj.nextSibling.wholeText.trim();
+    openOnly(obj);
+    restart(seq);
+}
+function rvsRot(obj){
+    var seq = obj.previousSibling.wholeText.trim();
+    restart("! " + seq);
+}
+function restart(rot,rots="") {
+    ClipDT = rot;
+    document.getElementsByName('pythonQ')[0].contentDocument.body.innerHTML = rots==""?rot:rots;
+    clearTimeout(cube3df.Tid2);
+    if (swin) {
+        let secu="";
+        try {swin.location.href} catch(e) {secu = String(e)}
+        if (secu!="") {
+            navigator.clipboard.writeText(rot);
+            setTimeout("swin.focus();",100);
+            return;
+        }
+        else if (swin.name) {
+            swin.focus();
+            swin.RotCopy(rot);
+            return;
+        }
+    }
+    cube3df.focus(),cube3df.RotCopy(rot);
+}
+function rotSolve(obj) {
+    openOnly(obj);
+    let i, rotates = "*", rot = "";
+    for (i=1;i<10;i++) rotates += "*"+note[i]+" "+solrote[i].replace(/-/g,"'").replace(/,/g," ") + " ";
+    rotates += "Y *-2 X2 *ソルブ完了";
+    for (i=1;i<10;i++) rot += solrote[i].replace(/-/g,"'").replace(/,/g," ") + " ";
+    restart(rotates,rot);
+}
+function RotCopy(obj){
+    document.getElementsByName('pythonQ')[0].contentWindow.location.replace('about:blank');
+    rot = obj.previousSibling.wholeText.trim();
+    navigator.clipboard.writeText(rot);
+    restart("*0c "+rot+" **", rot);
+}
+function openOnly(obj) {
+    openAll(document.getElementById('Example'),'');
+    upper = obj.parentElement.parentElement.parentElement;
+    if (upper.tagName=="DETAILS") {
+        upper.open = "open";
+        openAll(upper,'');
+    }
+    obj.parentElement.parentElement.open = "open";
+    openAll(document.getElementById("rotResol"));
+}
+</script>
+</head>
+<body background="images/nth_wood_blocks_bg.gif" bgcolor="#F8E2C7" onload="setLsner()">
+<h1 title="お告げソルブで、悩まずに廻して５分で完成！">ルービックキューブお告げ四四ソルブ　<font size=3> 第5版　2023.8.31
+</h1>
+<details><summary>
+【プロローグ】</summary>
+トレッドミル傾斜で6.5Km/hの歩行をしながら、認知能力・思考力が低下する環境を利用して、<br>
+ソルブ能率を低下させない手順を数十回試行錯誤。<br>
+判断力の期待できない状況下でも、単純化と効率化をバランスさせ、それなりの結果を得られる<br>
+手法が判明した。この3x3の手法を、殆どそのまま4x4に展開したものである。<br>
+
+<br><br>
+</details>
+疲れて眠い時や判断力欠如の時、あの3x3惰性的ソルブでも、90手ほどで揃えられた。<br>
+（左右ムーブは使わないが、エッジお迎えに使うUパームは覚えて置くこと。）<br>
+判断ミス激減、淀み・手戻りが無くなり、ソルブ90秒程度と手数は超安定している。<br>
+さらに4x4では、最初、各面の中央４個を同色に揃えることで、そのまま3x3の手順を踏襲できる。<br>
+（ただし、２か所のポイントで、<font color=red><b>パリティチェック</b></font>を追加している。）<br>
+
+<br>
+　　 <button type="button" onclick="openAll(document.getElementById('Proc'))">全解法を開く</button>
+   　<button type="button" onclick="openAll(document.getElementById('Proc'),'')">全解法を閉じる</button><br>
+<div id="Proc">
+次の８段階を経て揃える（4x4独特のパリティ検査が２か所増える）。
+<details><summary>
+(0)各面中央ポスト固め<br>
+　白と黄色を対面中央に４個ずつ固め、白を右において、赤、青、橙、緑(勝手に揃う)、と順に固める。</summary>
+　一つ上の面あるいは二つ上の面に跳ね上げて固定する。跳ね上げた波は必ず引き波で戻す。<br>
+　固定したいパーツは行き先で隠れスポットに回転させ保存、引き戻されないように踏ん張る。<br>
+　３個以上を隠すには、上げ波の線上でさらに上に上がるように置き、引き波で元の位置に戻して、<br>
+　隠れスポットに保存したパーツと合体させる。<br>
+　ここでの結合格言は、「二連は尻付け（直ケツ）、頭は肩に浮き一つ」。
+　<a href="http://cubeland.curahome.net/4x4x4/solution1/step1/" target=_BLANK>参考リンク：</a><br>　
+　　　<img src="https://mori1-hakua.tokyo/images/4rc_1_1_041.gif" width=120>
+　　　<img src="https://mori1-hakua.tokyo/images/4rc_1_2.png" width=120>
+</details>
+　　　<img src="https://mori1-hakua.tokyo/images/4rc_1_4.gif" width=120>
+<details><summary>
+(1)白面十字形準備<br>
+　エッジポストを同色２個ずつペアで固定して、3x3解法に結び付ける。</summary>
+　対象ペアの場所が12箇所と多いため、効率良く２箇所ずつ揃えられるように進めるのがベスト。<br>
+　次の３面配置A,Bとなるように外枠だけを回転させ、次の固定手順にてエッジペアを揃える。<br>
+　この時点では、２個のエッジの色が揃っていれば、各面の中央色と合っていなくてもよい。<br>
+　　　<img src="https://mori1-hakua.tokyo/images/4rc_1_4_008.gif" width=100>
+　<img src="https://mori1-hakua.tokyo/images/4rc_1_4_46.gif" width=100>
+　<img src="https://mori1-hakua.tokyo/images/4rc_1_4_47.gif" width=100>
+　<img src="https://mori1-hakua.tokyo/images/4rc_1_4_48.gif" width=100>
+　<img src="https://mori1-hakua.tokyo/images/4rc_1_4_49.gif" width=100>
+　<img src="https://mori1-hakua.tokyo/images/4rc_1_4_50.gif" width=100><br>
+　最後の中央エッジは、２箇所互いにクロスペアになり（左図）３面配置にできないことも起こる。<br>
+　　　<img src="https://mori1-hakua.tokyo/images/4rc_1_4_91.gif" width=120>
+　　　<img src="https://mori1-hakua.tokyo/images/4rc_1_4_92.gif" width=120><br>
+　この時、右図のキューブのようにエッジペアに並べるためには、次の手順による。<br>
+　<span> Rw' F U' R F' U Rw <button type="button" onclick="RotCopy(this)">コピー</button></span><br>
+　　　<img src="https://mori1-hakua.tokyo/images/Rw-.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/F.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/U-.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/R_.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/F-.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/U.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/Rw.png" width=80><br>
+　なお、誤操作によるパターンの破綻を回避する方法として、手数は少し増えるが、<br>
+　次のルーチン操作も総合的にはスピードアップに結び付く場合がある。<br>
+　Y X'u'R U R' F R' F' R Uw　　（A,A'をペア化する方法として常に使える手順）<br>
+　　　<img src="images/Y.png" width=80>
+　<img src="images/X-.png" width=80>
+　<img src="images/Uc-.png" width=80>
+　<img src="images/R_.png" width=80>
+　<img src="images/U.png" width=80>
+　<img src="images/R_-.png" width=80><br>
+　　　<img src="images/F.png" width=80>
+　<img src="images/R_-.png" width=80>
+　<img src="images/F-.png" width=80>
+　<img src="images/R_.png" width=80>
+　<img src="images/Uw.png" width=80><br>
+　中央エッジが12箇所揃ったら、<a href="/ルービックキューブ簡単解法.html#Cross" target=_BLANK>3x3の要領</a>で、白面の十字形を揃える。<br>　
+</details>
+　　　<img src="https://mori1-hakua.tokyo/images/4rc_1_3.gif" width=120>
+　　　<img src="https://mori1-hakua.tokyo/images/4rc_2_1_05.gif" width=120><br>
+
+<details id="renki" name="renki"><summary>
+(2)中段に(相撲の)黄ばんだマワシを作る<br>
+　慣れてくれば、(2),(3)を省略し、直接(4)へ進むことができる。（お告げF2L）<br>
+</summary>
+　・まず、中段エッジ４個を黄色を含むエッジピースで置き換える。<br>
+　　このとき「手前色」「迎え色」は無関係で、どこに置いてもよい。<br>
+</details>
+　　　<img src="https://mori1-hakua.tokyo/images/CUBEy.png" width=120>
+<details><summary>
+(3)中段マワシの黄ばみを取る<br>
+　マワシが中央色に揃ったら、今後１個でも切れ次第、早めに修復する！<br>
+</summary>
+　・上面奥のエッジ部に、上面が手前色であるエッジピースを横回転する。<br>
+　・上面奥のピース側面の色が「迎え色」のお告げなので、その中央色の<br>
+　　面の手前にあるエッジピースをあげ、ピース横回転で迎え色ピースに<br>
+　　置き換え、縦回転で中段手前に戻す。４エッジピース共に実施する。<br>
+</details>
+　　　<img src="https://mori1-hakua.tokyo/images/CUBEm.png" width=120>
+<details><summary>
+(4)マワシの足となる上段のコーナーピースを、下段に４個移動する<br>
+　　白が横を向いたコーナーピースを対象にして、４回作業を進める。<br>
+　　上層奥側で、原則、エッジのお告げがコーナーのお告げに優先する。<br>
+　　最下段、中段の完成を確認する。
+</summary>
+　・中段のマワシが切れている場合は、３)の要領でマワシを修復する。<br>
+　・コーナーピースの上面が「手前色」なので、そのコーナーピースを<br>
+　　上面奥（左右）に横回転する。左・右の決定は、コーナーピース側面<br>
+　　「迎え色」のお告げが中央キューブ色に近い側（迎える面）へ回す。<br>
+　　「手前色」が横を向いている場合は、一旦、上面への移動になるが、<br>
+　　後述する横向きの場合の臨時対応を使うと、一気に手数が縮む。<br>
+　・迎える面を縦回転して、手前のエッジキューブを上段に移動する。<br>
+　・迎えた主体のコーナーピースが下に隠れたので、エッジキューブを<br>
+　　奥に横回転させ待機する（手前横向きの臨時対応では、横回転は正面に）。<br>
+　・隠れたコーナーピースを下段から戻すと、２個連の強力な群になる<br>
+　　ので、思い切り良く180°横回転させる。<br>
+　・この横回転は勢いが過ぎた感じなので、迎える面を白エッジが手前<br>
+　　になるよう縦回転させ、群の行き過ぎを横回転で90°戻して、<br>
+　　迎える面の白エッジが手前から下層に移動するように縦回転する。<br>
+　・慣れてくれば、180°でなく90°で迎え面に止め、そのまま正面に倒すと、<br>
+　　迎え面の戻し縦回転だけで終わらせることができ、スムーズになる。<br>
+　　この迎え面の戻しの時、正面を90°回して保護し、事後に逆回転で戻す。<br>
+　　正面の戻しのとき、白を含むコーナーピースが沈むなら、先に横回転<br>
+　　して上層に残すことができ、１ターン増を上回る効率が得られる。<br>
+　・上面の横向き白のコーナーピースがない時は下段を点検し、見つかれ<br>
+　　ば縦回転・横180°回転・縦逆回転で戻す。<br>
+　　・中段のマワシが切れるので、３)の要領でマワシを修復する。<br>
+　　・４）の先頭から始める。<br>
+　・白上向きのコーナーピースだけが残ったら、次の作業を実施する。<br>
+　　・迎え先スロットの上に横回転後上向き縦回転で白横向きに倒し、<br>
+　　　倒れたピースを、更に横回転でスロットの位置の下層に移動させる。<br>
+　　・中段のマワシが切れるので、３)の要領でマワシを修復する。<br>
+　　　＜Rで倒す場合の事例＞セクシームーブという手順を３回実施<br>
+　　<img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-.gif" align="absmiddle"><br>
+→ <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-.gif" align="absmiddle"><br>
+→ <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle"><br>
+　　・４）の先頭から始める。<br>
+
+</details>
+　　　<img src="https://mori1-hakua.tokyo/images/CUBE1.png" width=120>
+<details><summary>
+(5)パリティ検査後コーナー交換<br>　４コーナーの位置を確定させる。（４x４パリティ補正あり）<br>
+　4x4で黄色面の黄色エッジペアが偶数箇所なら、そのまま3x3手順へ突入。</summary>
+　奇数箇所だったとき(OLLパリティと呼ばれる)は、事前に　次の補正が必要となる。<br>
+　　　　　(Rw,U2),X,(Rw,U2),(Rw,U2),(Rw',U2),X',(Rw,U2),(Rw',U2),(Rw,U2),(Rw',U2),Rw'<br>
+　　　　　　　アゲ・アーゲ・アゲアゲ<br>
+　　　　　　　サゲ・サーゲ・<font color=red>アゲ</font>サゲ<br>
+　　　　　　　アゲサゲ・最後サゲ<br>
+　　　　　　　トン，　　　トントンタン，　　　　　　トンタントンタン，　　　　　　　　タ<br>
+　　　<img src="https://mori1-hakua.tokyo/images/Rw.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/U2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/X.png" width=80><br>
+　　　<img src="https://mori1-hakua.tokyo/images/Rw.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/U2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/Rw.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/U2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/Rw-.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/U2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/X-.png" width=80><br>
+　　　<img src="https://mori1-hakua.tokyo/images/Rw.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/U2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/Rw-.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/U2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/Rw.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/U2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/Rw-.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/U2.png" width=80><br>
+　　　<img src="https://mori1-hakua.tokyo/images/Rw-.png" width=80>
+　　　　　慎重に回転させ、終了後の偶数箇所達成を確認する。<br><br>
+　なお、この手順は、次の１５手(OLLパリティ補正と同じ)でも可能である。<br>
+　　　　"r2 B2 U2 l U2 r' U2 r U2 F2 r F2 l' B2 r2"<br>
+　　　　右２奥２☆、左下☆右下☆右上☆、前２右上,前２左上、奥２右２（左右はW輪,☆は上２）<br>
+　　ミッツオツウツ、ヒザウツ,ミサウツ,ミウウッツ、マツミウ,マツヒウ、オツミッツ<br><br>
+
+　同色の面を持つコーナーポスト二つが１辺にあれば、その色の面に回転させ、隣接交換となる。<br>
+　隣接交換８割、対角交換（くるくるムーブ）１割、上層４コーナーの位置確定。無操作も有り<br>
+</details>
+<details><summary>
+(6)魚型十字作成（＜<a href="お告げによるルービックキューブNavi.html#fishCross" target=_BLANK>3x3解法の手段(3)</a>＞と基本的には同じ）</summary>
+　４コーナーの位置確定後、黄色面の形に沿って回転を進める。<br>
+　（横棒・３時６時ではくるくるムーブ→、その後くるくるパーム⇒で魚型）<br>
+　くるくるパーム⇒には、開始位置によって、<br>
+　　　・左廻し専用の「肩からパーム（十字横・蝶・亀手前）」と<br>
+　　　・左廻し専用の「腰からパーム（亀手開）」と<br>
+　　　・最終段階の左右廻しの「黄混血パーム」がある。<br>
+　↓　↓　　↓　<br>
+　点→横棒→３時→６時→十字（コーナー交換）⇒魚型十字<br>
+　　　　　↓→→→↑↓→亀・蝶・十字　　　　⇒魚型十字<br>
+　↓　↓<br>
+　点→横棒→３時⇒黄色一面<br>　黄色一面になったとき、くるくるパームで魚型に戻した方が早い。<br>
+　ほとんどの場合が、次の３コースのくるくるムーブ後、くるくるパームとなる。<br>
+　・点ー棒ー三ー六（または、対角ムーブ省略ー棒ー三ー六）<br>
+　・棒ー六<br>
+　・三ー六<br>
+</details>
+　　<img src="https://mori1-hakua.tokyo/images/CUBE2.png" width=100>
+<img src="https://mori1-hakua.tokyo/images/CUBE3.png" width=100>
+<details><summary>
+　<font color=red>⇩</font>の矢印位置から、左右くるくるパームを１発仕掛ける。<br>
+　　上段側面３個に黄色を含まない面(A)の対面(B)から、くるくるパーム回転を<br>
+　　１回実施して、全面黄色にする。一気にゴールとなる場合もある。<br>
+<br>
+　　くるくるパーム（左手）:LUL’ULU2L’　　 左廻し（Xp-a）<br>
+　　　　　　　　　（右手）R’U’RU’R’U2 R  　右廻し (Xp-b)</summary>
+　　<img src="https://mori1-hakua.tokyo/images/L.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/L-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/L.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U2.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/L-.gif" align="absmiddle">
+<br>
+　　<img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-2.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
+</details>
+　<img src="https://mori1-hakua.tokyo/images/CUBE4.png" width=150>
+<img src="https://mori1-hakua.tokyo/images/CUBE5.png" width=150>
+<br>　矢印の位置から右廻し　 矢印の位置から左廻し<br>
+</details>
+<details><summary>
+(7)上層の側面の色をお迎え手順でゴールする<br>
+・全面黄色の側面は、次の「お迎え」パターンのいずれかを告げているので、<br>
+　それぞれの対応回転を使ってゴールする<br>
+</summary>
+　１）奥側に３個同色の列を置いて、手前に対し左迎えか右迎え<br>
+　　　右迎え、左迎えのお迎えパーム　（U パーム）<br>
+　２）４個のエッジの十字交換　　　　（H パーム）<br>
+　３）４個のエッジに対し、手前と左側および奥側と右側の２個ずつの交換<br>
+　　　斜め２組交換　　　　　　　　　（Z パーム）<br>
+　　　この代わりに、左迎えと右迎えを順番に実施してもよい。<br>
+・ゴールを確認する
+</details>
+<details><summary>
+　なお、4x4のキューブの場合は、エッジ<font color=red>A'</font>とエッジ<font color=red>B'</font>が入れ替わったケースが<br>
+　５割ほど存在する。PLLパリティ発生と呼ばれる。<br>
+</summary>
+　その時には、次の手順で、<font color=red>C’</font>と対面するエッジ２個とを交換する必要がある。<br>
+　交換したい<font color=red>C’</font>と対面とを縦にしてフロントにおき、<br>
+　l2,U2,F2,l2,F2,U2,l2 （１８０°でルーフルフールと覚える）を廻す。<br>
+　　　<img src="https://mori1-hakua.tokyo/images/l2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/U2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/F2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/l2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/F2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/U2.png" width=80>
+　<img src="https://mori1-hakua.tokyo/images/l2.png" width=80><br>
+</details>
+</details>
+　　　<img src="https://mori1-hakua.tokyo/images/CUBE9.png" width=120><br>
+<br>
+</div>
+<details><summary>　【参考】暗記する５つの回転手順とパリティ補正</summary>
+<details><summary>　くるくる<b>ムーブ:</b> R' U' F' U F R <button type="button" onclick="RotCopy(this)">コピー</button><br>
+　　主に、時のお告げの対応で使う。<br>
+　　上面の４コーナーの対角交換としても使われる。</summary>
+　　<img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/F-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/F.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
+</details>
+<details><summary>　くるくる<b>パーム:</b> L U L' U L U2 L' <button type="button" onclick="RotCopy(this)">コピー</button> 　左廻し（Xp-a）<br>
+　　　　　　　　　 :<span> R' U' R U' R' U' 2R <button type="button" onclick="RotCopy(this)">コピー</button> 右廻し (Xp-b)</span></summary>
+　　<img src="https://mori1-hakua.tokyo/images/L.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/L-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/L.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U2.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/L-.gif" align="absmiddle">
+<br>
+　　<img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-2.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
+<br>
+　　開始位置によって、左廻し専用の「肩からパーム」「腰からパーム」<br>
+　　そして最終段階の左右廻し「最終パーム」があり、すべてくるくるパームである。
+</details>
+<details><summary>　隣接交換:<span> L R' U' R U L' U' R' U R <button type="button" onclick="RotCopy(this)">コピー</button></span></summary>
+　　隣接２個のコーナー交換が必要になっていれば、ここを右側に置いて次で確定する。<br>
+　　<img src="https://mori1-hakua.tokyo/images/L.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/L-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
+</details>
+<details><summary>　十字交換:<span> M2 U M2 U2 M2 U M2 <button type="button" onclick="RotCopy(this)">コピー</button>(Hp)</span><br>
+　　奥のエッジお迎えパームとして使われる。（M=lr）</summary>
+　　<img src="https://mori1-hakua.tokyo/images/M180u.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/M180u.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U2.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/M180u.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/M180u.gif" align="absmiddle">
+</details>
+<details><summary>　斜め２組交換:<span> M' U M2 U M2 U M' U2 M2 U' <button type="button" onclick="RotCopy(this)">コピー</button>(Zp)</span><br>
+　　正面での左右エッジお迎えと奥での左右エッジお迎えを同時にするパームとして使われる。</summary>
+　　<img src="images/Rc-.gif" align="absmiddle">
+→ <img src="images/U.gif" align="absmiddle">
+→ <img src="images/M180u.gif" align="absmiddle">
+→ <img src="images/U.gif" align="absmiddle">
+→ <img src="images/M180u.gif" align="absmiddle">
+→ <img src="images/U.gif" align="absmiddle">
+→ <img src="images/Rc-.gif" align="absmiddle">
+→ <img src="images/U2.gif" align="absmiddle">
+→ <img src="images/M180u.gif" align="absmiddle">
+→ <img src="images/U-.gif" align="absmiddle">
+</details>
+<details><summary>　３エッジ回転移動:<span>  M2 U' M' U2 M U' M2 <button type="button" onclick="RotCopy(this)">コピー</button> （右迎え）(Up-b）</span><br>
+　　　　　　　　　　  :<span> M2 U M' U2 M U M2 <button type="button" onclick="RotCopy(this)">コピー</button>　（左迎え) (Up-a)</span><br>
+　　主に左右のエッジお迎えパームとして使われる。（M=lr）</summary>
+　　<img src="https://mori1-hakua.tokyo/images/M180u.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/Rc-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U2.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/Rc.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/M180u.gif" align="absmiddle">
+<br>
+　　<img src="https://mori1-hakua.tokyo/images/M180u.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/Rc-.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U2.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/Rc.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
+→ <img src="https://mori1-hakua.tokyo/images/M180u.gif" align="absmiddle">
+</details>
+<details><summary>　4x4パリティ補正　:<span> X' L'2 U2 F2 L'2 F2 U2 L'2 X <button type="button" onclick="RotCopy(this)">コピー</button> （PLL Parity）</span><br>
+　　　　　　　　　　  :<span> r2 B2 U2 l U2 r' U2 r U2 F2 r F2 l' B2 r2 <button type="button" onclick="RotCopy(this)">コピー</button>　（OLL Parity) </span><br>
+　　</summary>
+</details>
+</details><br>
+<div id="Example">
+<div id="rotResol">
+<details ><summary> 　<strong>参考： 4x4回転記号と3D Rubik's Cube の結果</strong>
+(<button type=button onclick="openSwin(this)">別窓</button>)
+(<button type=button onclick="openSwin(this,lang='en')">English</button>)</summary>
+
+<table><tr><td>　</td><td><iframe name="pythonQ" height="28px" width="800px" scrolling="yes" frameborder="0" src=""></iframe>
+</td></tr>
+<tr><td>　</td><td><iframe name="cube3df" style="resize: both; width:380px; height:620px" frameborder="0" src="/CubeV5/navigation-55.html?4x4"></iframe>
+</td><tr><td>　</td><td>休止状態のとき、「変速」ボタンではスクランブルに使った回転文字列が出る。<br>
+「4x4ソルブ」はお告げによる中央固めとエッジペア、そしてマワシ形成、上面合わせに進められる。<br>
+</td><tr><td>　</td><td>スクランブルA:<span> l2 B2 l B U' D' b' R2 u r' F2 d' B2 u2 U2 D l' D r2 R b2 B2 b L2 L' B' b2 f' F d l' f F r u D F' R' r2 R2 b2 f' R b2 <button type="button" onclick="RotCopy(this)">セット</button></span><br>
+</td><tr><td>　</td><td>スクランブルB:<span> L' R2 U2 F2 U2 F2 D' R2 D' F U' L D' R D' F' L ** <button type="button" onclick="RotCopy(this)">セット</button></span><button type="button" onclick="rotSolve(this)">全ソルブ回転</button><br>
+</td></tr>
+</table>
+</details>
+</div>
+</div><br>
+　　　　　　　　　<a href="https://mori1-hakua.tokyo/RCeasy.html">https://mori1-hakua.tokyo/RCeasy.html</a>
+  By N.Fujii　　<a href="javascript:location.reload(true)" title="詳細を閉じる"><b>Top</a><br><br>
+累積アクセス数：<iframe src="/count_img/countRC.php" align=absbottom height=30 width=140 frameborder="0" scrolling="no"></iframe>

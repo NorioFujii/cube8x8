@@ -1,0 +1,16 @@
+{
+  "name": "ルービック・キューブのナビゲーター",
+  "short_name": "お告げナビ",
+  "description": "ルービック・キューブお告げソルブのナビゲーター",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "192x192 32x32",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "theme_color": "#dff0d8",
+  "background_color": "#dff0d8"
+}
