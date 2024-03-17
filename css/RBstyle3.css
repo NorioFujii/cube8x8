@@ -1,0 +1,348 @@
+html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}
+body{line-height:1}
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}
+nav ul{list-style:none}
+blockquote,q{quotes:none}
+blockquote:before,blockquote:after,q:before,q:after{content:none}
+a{margin:0;padding:0;font-size:100%;vertical-align:baseline;background:transparent}
+ins{background-color:#ff9;color:#000;text-decoration:none}
+mark{background-color:#ff9;color:#000;font-style:italic;font-weight:bold}
+del{text-decoration:line-through}
+abbr[title],dfn[title]{border-bottom:1px dotted;cursor:help}
+table{border-collapse:collapse;border-spacing:0}
+hr{display:block;height:1px;border:0;border-top:1px solid #ccc;margin:1em 0;padding:0}
+input,select{vertical-align:middle}
+html {
+  overscroll-behavior-y: none;
+}
+body {
+  background-color: #eee;
+  user-select:none;
+  -moz-user-select: none; 
+  -webkit-user-select: none; 
+  -ms-user-select:none; 
+  -o-user-select:none;
+  touch-action: manipulation;
+  overscroll-behavior-y: none;
+}
+.lower {
+  line-height: 120%;
+  vertical-align: bottom;
+}
+.lowerL {
+  line-height: 120%;
+  vertical-align: bottom;
+  text-align: left !important;
+}
+.lowerRot {
+  font-size: 11px;
+  line-height: 120%;
+  vertical-align: bottom;
+  text-align: left !important;
+}
+.ruwixpic {
+  float: right;
+  opacity: 0.2;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.ruwixpic:hover {
+  opacity: 0.7;
+}
+.flex_test-box {
+    display: flex;              /* フレックスボックスにする */
+    flex-wrap: wrap;            /* 折り返し指定 */
+    align-content:stretch;      /* 折り返し時の配置指定 */
+    padding:  10px;             /* 余白指定 */
+}
+ 
+.flex_test-item {
+    padding: 4px;
+    margin:  4px;              /* 外側の余白 */
+    border-radius:  5px;        /* 角丸指定 */
+    width: 240px;               /* 幅指定 */
+}
+.flex_test-item:nth-child(1) {
+}
+.flex_test-item:nth-child(2) {
+    width: 244px;               /* 幅指定 */
+}
+.flex_test-item:nth-child(3) {
+}
+
+.lower {
+    font-color: green;
+}
+
+.commands {
+  width: 260px;
+  margin: auto;
+}
+.statusL {
+  width:83px;
+  padding: 1px 1px;
+  float: left;
+  font-size: 10px;
+  margin: 1px 1px;
+  font-family: arial;
+  font-weight: bold;
+  border-radius: 4px;
+  color: #fff;
+  background-color: green;
+}
+.commandb {
+  padding: 3px 1px;
+  float: left;
+  font-size: 12px;
+  margin: 1px 1px;
+  font-family: arial;
+  font-weight: bold;
+  border-radius: 2px;
+  color: #fff;
+  cursor: pointer;
+  background-color: #ce4b42;
+}
+.commandb:hover {
+    background-color: #333;
+}
+button:disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+}
+.commands div {
+  padding: 1px 5px;
+  float: left;
+  font-size: 14px;
+  margin: 1px 3px;
+  font-family: arial;
+  font-weight: bold;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  background-color: #ce4b42;
+  width: 22px;
+  text-align: center;
+}
+.statusExplain {
+  border: none !important;
+  clear: both !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 5px 0 5px !important;
+  background-color: #eee !important;
+  text-align: left !important;
+  color: green !important;
+  font-weight: bold !important;
+}
+.commandExplain {
+  border: none !important;
+  clear: both !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 5px 0 5px !important;
+  background-color: #eee !important;
+  text-align: left !important;
+  color: #000 !important;
+  font-weight: normal !important;
+}
+.commands div:hover {
+	background-color: #333;
+}
+.credits {
+  color : #333;
+}
+
+.cube {
+        cursor: pointer;
+	position: relative;
+	width: 104px;
+	transform-style: preserve-3d;
+	-moz-transform-style: preserve-3d;
+	-webkit-transform-style: preserve-3d;
+	
+	transform:  rotateX(-20deg) rotateY(335deg) rotateZ(0deg) ;
+	-moz-transform:  rotateX(-20deg) rotateY(335deg) rotateZ(0deg) ;
+	-webkit-transform:  rotateX(-20deg) rotateY(335deg) rotateZ(0deg);
+}
+
+#rotLayer, #cubeFields {
+  transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+#rotLayer, #cubeFields {
+    transform: rotateY(0deg);
+    -moz-transform: rotateY(0deg);
+    -webkit-transform: rotateY(0deg);
+}
+.rotateMac2 {
+  padding: 3px 7px;
+  float: left;
+  font-size: 14px;
+  margin: 1px 3px;
+  font-family: arial;
+  font-weight: bold;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  background-color: #ce4b42;
+  width: 50px;
+  text-align: center;
+}
+
+
+.hiddenmezo {
+	display: none;
+}
+.mezo, .layer, .field {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #000;
+/*  border: 4px solid #202020; */
+  border-radius: 5px;/*角の丸み*/
+}
+.core {
+    position: absolute;
+    width: 104px;
+    height: 104px;
+    background-color: rgba(2, 2, 2, 1);
+    border-radius: 5px;/*角の丸み*/
+}
+.mezo  span {
+	display: none;
+}
+.szine0{	background-color: #888;	}
+.szine8{	background-color: #FFF;	}
+.szine1{	background-color: #FFF;	}	
+.szine2{	background-color: #FF6907;	}	
+.szine3{	background-color: #00A75D;	}	
+.szine4{	background-color: #B60101;	}
+.szine5{	background-color: #213DFD;	}
+.szine6{	background-color: #FFD500;	}
+.szine7{	background-color: #000;	}
+.szine9{	background-color: #022;	}
+.szinf0{	background-color: #888;	}
+.szinf8{	background-color: #FFF;	}
+.szinf1{	background-color: #FFF;	}	
+.szinf2{	background-color: #FFBD8C;	}	
+.szinf3{	background-color: #88DCB6;	}	
+.szinf4{	background-color: #E38989;	}
+.szinf5{	background-color: #99A6FE;	}
+.szinf6{	background-color: #FFF288;	}
+.szinf7{	background-color: #000;	}
+.szinf9{	background-color: #022;	}
+.toggle_input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  opacity: 0;
+  cursor: pointer;
+  font-weight: normal;
+}
+.toggle_label {
+  width: 36px;
+  height: 18px;
+  background: #ccc;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  transition: 0.4s;
+  box-sizing: border-box;
+  border-radius: 6px;/*角の丸み*/
+}
+.move_label {
+  width: 20px;
+  height: 18px;
+  background: #ccc;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  transition: 0.4s;
+  box-sizing: border-box;
+  border-radius: 6px;/*角の丸み*/
+}
+
+.toggle_label:after {
+  position: absolute;
+  font-size: 14px;
+  left: 4px;
+  top: 2px;
+  z-index: 5;
+  color: #fff;
+  transition: 0.4s;
+}
+
+.toggle_input:checked + .toggle_label {
+  background-color: #4BD865;
+  font-weight: bolder;
+}
+
+.toggle_input:checked + .toggle_label:after {
+  font-weight: bolder;
+}
+
+.toggle_button {
+  position: relative;
+  width: 28px;
+  height: 18px;
+  margin: auto;
+  vertical-align: middle;
+}
+ /* === ボタンを表示するエリア ============================== */
+.sample1Area , .sample2Area {
+ /*  margin         : auto;                中央寄せ           */
+  box-sizing     : content-box;          /* 枠線を含んだサイズ */
+  font-size      : x-small;
+  margin-bottom  : 4px ;                /*                    */
+  width          : 36px;                /* ボタンの横幅       */
+  height         : 44px;                /* ボタンの高さ       */
+}
+ /* === チェックボックス ==================================== */
+.sample1Area input[type="checkbox"] {
+  display        : none;            /* チェックボックス非表示 */
+}
+.sample2Area input[type="checkbox"] {
+  display        : none;            /* チェックボックス非表示 */
+}
+ 
+ /* === チェックボックスのラベル（標準） ==================== */
+.sample1Area label {
+  display        : block;               /* ボックス要素に変更 */
+  border         : 2px solid #aaa;      /* 枠線(一旦四方向)   */
+  border-radius  : 4px;                 /* 角丸               */
+  width          : 20px;                /* ボタンの横幅       */
+  height         : 20px;                /* ボタンの高さ       */
+  background-image: url("../images/sozai_10.gif");  /* 背景   */
+  transition     : .5s;               /*   滑らか変化         */
+}
+ 
+ /* === ON側のチェックボックスのラベル（ONのとき） ========== */
+.sample1Area #sample1check:checked + label {
+  background-image: url("../images/sozai_15.gif");  /* 背景   */
+}
+ 
+ /* === チェックボックスのラベル（標準） ==================== */
+.sample2Area label {
+  display        : block;               /* ボックス要素に変更 */
+  border         : 2px solid #aaa;      /* 枠線(一旦四方向)   */
+  border-radius  : 4px;                 /* 角丸               */
+  width          : 20px;                /* ボタンの横幅       */
+  height         : 20px;                /* ボタンの高さ       */
+  background-image: url("../images/sozai_30.gif");  /* 背景   */
+  transition     : .5s;                /*  滑らか変化         */
+}
+ /* === ON側のチェックボックスのラベル（ONのとき） ========== */
+.sample2Area #sample2check:checked + label {
+  background-image: url("../images/sozai_35.gif");  /* 背景   */
+}
+ /* === ラベル内の画像（標準） ============================== */
+.sample1Area label img,
+.sample2Area label img {
+  display        : block;               /* ブロック化         */
+  margin         : 16px auto auto 8px;  /* 上は6pxで中央寄せ  */
+}

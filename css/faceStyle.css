@@ -1,0 +1,89 @@
+div.is-hidden {
+    display: none;
+}
+div.is-visible {
+    display: block;
+}
+body {
+    text-align: center;
+    user-select: none;
+}
+h1{
+    padding: 10px;
+    margin: auto;
+    font-weight: bold;
+    color: blue;/*文字色*/
+}
+h2{
+    padding: 26px;
+    margin: auto;
+}
+p{
+    padding: 10px;
+    margin: auto;
+    width: 300px;
+    font-weight: bold;
+    color: blue;/*文字色*/
+}
+#start1:hover{
+    background: #6091d3;
+    color: white;
+    cursor: pointer;/*カーソルをポインターに変える*/
+}
+#start2:hover{
+    background: #6091d3;
+    color: white;
+    cursor: pointer;/*カーソルをポインターに変える*/
+}
+#game{
+    margin-right: auto;/* 中央寄せ */
+    margin-left: auto;/* 中央寄せ */
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    flex-wrap:wrap;
+    align-content:stretch;
+    width: 138px;
+}
+#game.pointer-none{
+    pointer-events: none;
+}
+.fieldF3,
+.fieldF4{
+    width:40px;
+    height: 40px;
+    padding: 0;
+    margin: 0;
+    color: blue;/*文字色*/
+    border: 3px solid #202020;
+    border-radius: 8px;/*角の丸み*/
+}
+.fieldF5{
+    width:32px;
+    height: 32px;
+    padding: 0;
+    margin: 0;
+    color: blue;/*文字色*/
+    border: 2px solid #202020;
+    border-radius: 4px;/*角の丸み*/
+}
+.fieldF2{
+    width:60px;
+    height: 60px;
+    padding: 0;
+    margin: 0;
+    color: blue;/*文字色*/
+    border: 3px solid #202020;
+    border-radius: 8px;/*角の丸み*/
+}
+.fieldF3:hover,
+.fieldF4:hover,
+.fieldF5:hover,
+.fieldF2:hover {
+    background: pink;
+    border: 2px solid #333;
+    cursor: pointer;/*カーソルをポインターに変える*/
+}
+#top{
+    height: 25%;
+}
