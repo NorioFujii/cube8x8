@@ -25,6 +25,9 @@ body {
   touch-action: manipulation;
   overscroll-behavior-y: none;
 }
+.emoji {
+  font-family: "Apple Color Emoji","twemoji mozilla", BlinkMacSystemFon,"android emoji",emojisymbols,"emojione mozilla","segoe ui symbol";
+}
 .lower {
   line-height: 120%;
   vertical-align: bottom;
@@ -299,8 +302,8 @@ button:disabled {
   box-sizing     : content-box;          /* 枠線を含んだサイズ */
   font-size      : x-small;
   margin-bottom  : 4px ;                /*                    */
-  width          : 36px;                /* ボタンの横幅       */
-  height         : 44px;                /* ボタンの高さ       */
+  width          : 32px;                /* ボタンの横幅       */
+  height         : 54px;                /* ボタンの高さ       */
 }
  /* === チェックボックス ==================================== */
 .sample1Area input[type="checkbox"] {
@@ -344,5 +347,5 @@ button:disabled {
 .sample1Area label img,
 .sample2Area label img {
   display        : block;               /* ブロック化         */
-  margin         : 16px auto auto 8px;  /* 上は6pxで中央寄せ  */
+  margin         : 24px auto auto 2px;  /* 上は6pxで中央寄せ  */
 }
