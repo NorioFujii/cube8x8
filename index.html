@@ -189,7 +189,7 @@ for (var y = 0; y < 6; y++) {
       </div><!-- display hidden -->
 
 	<div class="commands" align=left><a href="お告げによるルービックキューブ解法.html" target="_blank">お告げソルブ解説</a>
-　<a href="V6拡張.pdf" target="_blank" title="V6機能">Navi V6.1</a> <img src="images/home.gif" width=18 align=bottom onclick='window.open("お告げナビのインストールについて.pdf","_blank")' title="インストール">
+　<a href="V6拡張.pdf" target="_blank" title="V6機能">Navi V6.2</a> <img src="images/home.gif" width=18 align=bottom onclick='window.open("お告げナビのインストールについて.pdf","_blank")' title="インストール">
 	</div><!-- end of commands -->
         <br>
         <div class="commands" id="statusBlk" style="border: 1px solid gray; width: 256px; height: 220px; display: none; color:green;"><span style="line-height:160%;">ソルブ進行状況表</span><br><!-- 進行状況表　height: 220px;/168px -->
@@ -219,7 +219,7 @@ for (var y = 0; y < 6; y++) {
 		<button class="commandb" type=button onclick="initVirgin()" onDBLclick="location.reload(true)">初期化</button>
 		<button class="commandb" type=button onclick="scramble()" id="scrm3x3" role="tooltip" data-microtip-position="bottom" aria-label="Scramble!">スクランブル</button>
 		<button class="commandb" type=button onclick="pause()" style="width: 33px">休止</button>
-		<button class="commandb" type=button onclick="accel()" style="width: 34px" onDBLclick='accel(2)' role="tooltip" data-microtip-size="small" data-microtip-position="bottom" aria-label="高速と低速　交互切替">変速</button>
+		<button class="commandb" type=button onclick="accel()" style="width: 35px" onDBLclick='accel(2)' role="tooltip" data-microtip-size="small" data-microtip-position="bottom" aria-label="高速と低速　交互切替">変速</button>
 		<button class="commandb" type=button onclick="quickIn()" style="width: 119px">記号列入力( ,or sp)</button>
 		<button class="commandb" type=button onclick="Solve()" id="solveX" role="tooltip" data-microtip-position="bottom" aria-label="Solve!">お告げソルブ</button>
 		<button class="commandb" type=button onclick="demo()" style="width: 36px" role="tooltip" data-microtip-position="bottom" aria-label="Demo:スクランブルとソルブを繰り返す">デモ</button>
@@ -230,13 +230,13 @@ for (var y = 0; y < 6; y++) {
 		<button class="commandb" type=button onclick="reserve()" style="width: 36px">予備</button>
 	</span>
 	        <div class="commandExplain">
-                  <div class="sample1Area" role="tooltip" data-microtip-size="small" data-microtip-position="bottom" aria-label="回転ウィンカーモード"><input type="checkbox" id="sample1check" onclick="accel(2)">wink&nbsp;<label for="sample1check"></label></div>
-                  <div class="sample2Area" role="tooltip" data-microtip-size="small" data-microtip-position="bottom" aria-label="ウィンカーモードでもアニメーション"><input  type="checkbox" id="sample2check">rote&nbsp;<label for="sample2check"></label></div>
-		  <button class="commandb" type=button onclick="saveCube()" style="width: 56px">状態<br>保存</button>
-                  <input name="logdisp" type="button" value="DUMP" onclick="dumpRot()">
-		  <button class="commandb" type=button onclick="setFaces()">実Cube<br>反映</button><br>
-                  <input name="logdisp" type="button" value="COPY" onclick="copyRot()">
-		  <button class="commandb" type=button onclick="restCube()" style="width: 132px">保存状態高速再現</button>
+                  <div class="sample1Area" role="tooltip" data-microtip-size="small" data-microtip-position="bottom" aria-label="回転ウィンカーモード"><input type="checkbox" id="sample1check" onclick="accel(2)">Win<br>ker<label for="sample1check"></label></div>
+                  <div class="sample2Area" role="tooltip" data-microtip-size="small" data-microtip-position="bottom" aria-label="ウィンカーモードでもアニメーション"><input  type="checkbox" id="sample2check">Rot<br>ate<label for="sample2check"></label></div>
+		  <button class="commandb" type=button onclick="saveCube()" style="width: 56px">状態保存</button>
+		  <button class="commandb" type=button onclick="restCube()" style="width: 56px">保存再現</button>
+		  <button class="commandb" type=button onclick="setFaces()">実キューブ取り込み</button><br>
+                  <input name="logdisp" type="button" value="DUMP" style="width: 50px" onclick="dumpRot()">
+                  <input name="logdisp" type="button" value="COPY" style="width: 50px" onclick="copyRot()">
                 </div>
 	</div><!-- end of commands -->
       </div><!-- end of flex_test-item -->
