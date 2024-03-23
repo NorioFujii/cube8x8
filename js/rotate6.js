@@ -267,23 +267,105 @@ function creFaces(no,x,y,z,rotate,n=3) { // no:top of each face
     }
     return r;
 }
-function kiirRote(gost,e) { // 移動対象PartsのHTMLを#rotLayerに作成
-    var rotl=true, n = (N==2)?4:N;
-    for (var i=0;i<6;i++)
-        for (var y=0;y<n;y++)
-            for (var x=0;x<n;x++)
-                if (gost[i][y][x])
-                    posts.push(CubeNo(i,y,x,n)); 
+function kiirRote(gost,e) { 
+// 移動対象PartsのHTMLを#rotLayerに作成、順番はrotParts[i][y][x].slice(1)の手の形から
+// 指の向きにpostsにスタックする。２面、３面、０面の順、１、４、５と続く。再生は先着１０個
+// 1,2,3面に上向き指なら、それぞれの面でｙ減少方向に、最後に０面一括
+// 1,2,3面に下向き指なら、最初に０面一括、それぞれの面でｙ増加方向に、
+// 横向き指なら、それぞれの面でそのｘ方向に、
+    if (LED) if (CounterB>0) {
+        setTimeout("kiirRote(rotParts,"+e+");",800);
+        return true;
+    }
+    var lo="",r=-1, m=0, p=0, wink="", n = (N==2)?4:N;
     if ((e>30)&&(e<50)) e-=30;
-    kiirRotLayer(posts,e,n,rotl);
-//  console.log(posts);
-    posts = new Array();
+    posts = [];
+    for (var fm=[2,3,0,1,4,5],f=0;f<6;f++)
+        for (var i=fm[f],y=0;y<n;y++)
+            for (var x=0;x<n;x++)
+                if (gost[i][y][x]) {
+                   var rr = CubeNo(i,y,x,n);
+                   posts.push(rr);
+                   if ((wink=="")&&(gost[i][y][x].length>1)) {
+                           r = p;
+                           wink = gost[i][y][x].slice(1);
+                           while (gost[i][y][x+m]&&(gost[i][y][x+m].length>1)) m++;
+                   }
+                   p++;
+                }
+    if (LED&&(e<50)&&(r>-1)) { // meteor
+        var ary=[];
+        punit = ((wink=="👈")||(wink=="👉"))? 1:m ; 
+        function postPick(bgn,unt) {
+            ary=[];for (i=0;i<unt;i++) ary.push(posts[bgn+i*punit]);
+            return ary;
+        }
+        top10=[];if ($("#sample2check").prop("checked")) {
+            var top51 = postPick(r,n);
+            var top52 = postPick(r+n*punit,n);
+            if      (wink=="👈") top10 = top52.reverse().concat(top51.reverse());
+            else if (wink=="👆") top10 = top51.reverse().concat(top52.reverse());
+            else if (wink=="👉") top10 = postPick(r,n*2);
+            else if (wink=="👇") top10 = top52.concat(top51);
+            los = "";
+        }
+        if (top10.length>0) {
+            pwk = partsWinker(posts,0,'tail');
+            meteorWinker(top10,meteorWinker,'head');
+        } else {
+            pwk = partsWinker(posts,0,'body');
+            bodyWink();
+        }
+        return true;
+    } 
+    if (posts.length>0) {
+        kiirRotLayer(posts,e,n,true);
+        return false;
+    }
 }
+function partsWinker(parts,bgn=0,hbt='body') {
+    var n=N,lo="";
+    for(var i=bgn;i<parts.length;i++) {
+        var s = unfold(parts[i]," szin", n); 
+        var t = "#cubeFields .mezo"+ s.slice(0,-6);
+        lo += '<div class="mezo'+ s + Ns(parts[i],n) +' layer mezo" style="transform:'+ $(t).css('transform') +'">'+
+              ((hbt!='body')? Nt(parts[i],n):('<span class="winker">' + Nt(parts[i],n) + '</span>')) + '</div>'; //  
+    }
+    return lo;
+}
+let top10,los,pwk,punit;
+function meteorWinker(top=top10,nextF=noop,hbt='tail') {
+    if ((CounterB==0)&&(top.length==0)) {
+        if (hbt=='tail') kiir(), turnN++;
+        Counter = 0;
+        return false;
+    }
+　　var n=N, met=top.slice(), r = met.shift();
+    Counter++;
+    CounterB++;
+    setTimeout(function(){
+       for (var no=r;no<r+punit;no++) {
+           var s = unfold(no," szin", n); 
+           var t = "#cubeFields .mezo"+ s.slice(0,-6);
+           los += '<div class="mezo'+ s + Ns(no,n) + ' layer mezo" style="transform:' + 
+                     $(t).css('transform') + ((hbt=='head')? ('">'+Nt(no,n)):'"> ')+'</div>';
+       }
+       $("#rotLayer").html(los);
+       met.length>0?meteorWinker(met,nextF,hbt):((hbt=='tail')?(kiir(),turnN++):los=pwk,CounterB=0,Counter=0,nextF());
+     },speed*2); // 
+}
+function bodyWink() { 
+        $("#rotLayer").html(pwk);
+        $(".winker").css('display','block');
+        Counter++;
+        flushWinker(speed*4,4);
+}
+
 function kiirRotLayer(r,e,n=N,g=false){  // 書き直しのレイヤー選択
     if (Counter<0) return;
     var i, s, t, lo="", rr=r, ra, flip, n = (n==2)?4:n;
     if (typeof(r[0])=='object') rr = r[0].concat(r.slice(1));
-    if (!LED||($("#sample2check").prop("checked"))) {
+    if (!LED) {
         flip = FaceF; FaceF=""; // 回転中は鏡部分を畳んで表示することに決めた（V5）
         $("#rotLayer").html($("#cubeFields").html()); // #cubeFieldsのデータ退避
         kiir(n,true);           // 畳んだ状態での#cubeFieldを新規作成
@@ -311,37 +393,30 @@ function kiirRotLayer(r,e,n=N,g=false){  // 書き直しのレイヤー選択
     }
     $("#rotLayer").html(lo);// facerotate()か、kiir()で表示
 }
+function flushWinker(tm,cnt=8) {
+    CounterB++;
+　　var id=".winker";
+    setTimeout(function() {
+            $(id).css("display",CounterB%2?"none":"block");
+            cnt>CounterB?flushWinker(tm,cnt):(CounterB=0,meteorWinker());
+        },tm); // 
+}
+const noop=() => {}
 function facerotate(e, a, tm, n=N) {
     rotParts = new Array(6);
     for (var i=0;i<6;i++) {
             rotParts[i] = new Array(8);
             for (var j=0;j<8;j++) rotParts[i][j] = [];
     }
-//   console.log(e+','+a);
-    if ((ShiftRing)&&((e==10)||(e==11)||(e==12))) { // Ring倍増への拡張(不採用)
-                var t = moveSTK[e][1-(a&1)], m = n>>1, d = Over5;
-                "Mc"==t&&(MoveVert(1,tm,m)),  "mc"==t&&(moveVert(1,tm,m)),
-                "Mr"==t&&(MoveVert(1,tm,m+d)),"mr"==t&&(moveVert(1,tm,m+d)),
-                "Ml"==t&&(moveVert(1,tm,m-d)),"ml"==t&&(MoveVert(1,tm,m-d)),
-                "Cr"==t&&(MoveVert(0,tm,m+1)),"cr"==t&&(moveVert(0,tm,m+1)),
-                "Cl"==t&&(moveVert(0,tm,m-1)),"cl"==t&&(MoveVert(0,tm,m-1));
-                if ((n>5)&&(Over5==1)&&(e>10)) e += 7 ;
-    } else {
+    moveSTK[e][4-(a&1)].forEach(function(v,i,ar) {
+        v(ar.length); // console.log(e+','+v);
+    });
+    if ((tm==2)&&(moveSTK[e][0].charAt(1)!="2"))
         moveSTK[e][4-(a&1)].forEach(function(v,i,ar) {
-            v(ar.length); // console.log(e+','+v);
+            v(ar.length);
         });
-        if ((tm==2)&&( moveSTK[e][0].charAt(1)!="2"))
-            moveSTK[e][4-(a&1)].forEach(function(v,i,ar) {
-                v(ar.length);
-            });
-    }
     if (Counter<0) return;
-    $("#rotLayer").html(kiirRote(rotParts,e));
-    if (LED&&(!$("#sample2check").prop("checked"))&&(e<50)) {
-        Counter++;
-        flushB(100,speed/10,"#rotLayer");
-        return;
-    }
+    if (kiirRote(rotParts,e)) return;
     if (a>80) {
         facerote(a, tm);
         return;
@@ -579,7 +654,7 @@ function MoveHori(m,w,l,n=N) { // CW Rotate horizontal layer l.
     var i, j, x; // (N>3)?N:4 if (N==3) if (l==2) l = 3;
     for (x=0;x<n;x++) s[x] = CubeMap[1][l][x];
     if (m>0) for(i=1;i<5;i++)for(j=0;j<n;j++) {
-            rotParts[i][l][j] = CubeMap[i][l][j] + ((i>2)?"👉":"👈"); }
+            rotParts[i][l][j] = String(CubeMap[i][l][j]) + ((i>2)?"👉":"👈"); }
     if (w==2) for (x=0;x<n;x++) s[x+n] = CubeMap[2][l][x];
     for (i=1;i<5;i++)
         for (x=0;x<n;x++) {
@@ -592,7 +667,7 @@ function moveHori(m,w,l,n=N) { // CCW Rotate horizontal layer l.
     if (n==2) n = 4;
     var i, j, x; // (N>3)?N:4 if (N==3) if (l==2) l = 3;
     if (m>0) for(i=1;i<5;i++)for(j=0;j<n;j++) {
-            rotParts[i][l][j] = CubeMap[i][l][j] + ((i>2)?"👈":"👉"); }
+            rotParts[i][l][j] = String(CubeMap[i][l][j]) + ((i>2)?"👈":"👉"); }
     for (x=0;x<n;x++) s[x] = CubeMap[4][l][x];
     if (w==2) for (x=0;x<n;x++) s[x+n] = CubeMap[3][l][x];
     for (i=4;i>0;i--)
@@ -607,7 +682,7 @@ function MoveVert(m,w,l,n=N) { // CW Rotate vertical layer l.
     var i, j, y, ty, tl, tate=[0,2,5,4], Dtate=["👇","👆","👆","👇"];
     if (m>0) for(i=0;i<4;i++)for(j=0;j<n;j++) {
             var vl=l;if (i==3) vl=n-1-l;
-            rotParts[tate[i]][j][vl] = CubeMap[tate[i]][j][vl] + Dtate[i]; }
+            rotParts[tate[i]][j][vl] = String(CubeMap[tate[i]][j][vl]) + Dtate[i]; }
     for (y=0;y<n;y++) s[y] = CubeMap[0][y][l];
     if (w==2) for (y=0;y<n;y++) s[y+n] = CubeMap[2][y][l];
     for (y=0;y<n;y++) {
@@ -631,7 +706,7 @@ function moveVert(m,w,l,n=N) { // CCW Rotate vertical layer l.
     var i, j, y, vl, rtate=[4,5,2,0], dtate=["👆","👇","👇","👆"];
     if (m>0) for(i=0;i<4;i++)for(j=0;j<n;j++) {
          vl=l;if (i==0) vl=n-1-l;
-         rotParts[rtate[i]][j][vl] = CubeMap[rtate[i]][j][vl] + dtate[i]; }
+         rotParts[rtate[i]][j][vl] = String(CubeMap[rtate[i]][j][vl]) + dtate[i]; }
     for (y=0;y<n;y++) s[y] = CubeMap[4][n-1-y][n-1-l];
     if (w==2) for (y=0;y<n;y++) s[y+n] = CubeMap[5][y][l];
     for (y=0;y<n;y++) {
@@ -651,10 +726,10 @@ function MoveCirc(m,w,l,n=N) { // CW Rotate Circle layer l.
     if (n==2) n = 4;
     var i, j, x, vx, vl=n-1-l, rund=[0,1,5,3];
     if (m>0) for(j=0;j<n;j++) {
-        rotParts[0][vl][j] = CubeMap[0][vl][j] + "👉";
-        rotParts[1][j][vl] = CubeMap[1][j][vl] + "👆";
-        rotParts[3][j][l]  = CubeMap[3][j][l] + "👇";
-        rotParts[5][l][j]  = CubeMap[5][l][j] + "👈";
+        rotParts[0][vl][j] = String(CubeMap[0][vl][j]) + "👉";
+        rotParts[1][j][vl] = String(CubeMap[1][j][vl]) + "👆";
+        rotParts[3][j][l]  = String(CubeMap[3][j][l]) + "👇";
+        rotParts[5][l][j]  = String(CubeMap[5][l][j]) + "👈";
     }
     for (x=0;x<n;x++) s[x] = CubeMap[0][vl][x];
     if (w==2) for (x=0;x<n;x++) s[x+n] = CubeMap[1][x][vl];
@@ -679,10 +754,10 @@ function moveCirc(m,w,l,n=N) { // CCW Rotate Circle layer l.
     if (n==2) n = 4;
     var i, j, x, vx, vl=n-1-l, rund=[0,3,5,1];
     if (m>0) for(j=0;j<n;j++) {
-        rotParts[0][vl][j] = CubeMap[0][vl][j] + "👈";
-        rotParts[1][j][vl] = CubeMap[1][j][vl] + "👇";
-        rotParts[3][j][l]  = CubeMap[3][j][l] + "👆";
-        rotParts[5][l][j]  = CubeMap[5][l][j] + "👉";
+        rotParts[0][vl][j] = String(CubeMap[0][vl][j]) + "👈";
+        rotParts[1][j][vl] = String(CubeMap[1][j][vl]) + "👇";
+        rotParts[3][j][l]  = String(CubeMap[3][j][l]) + "👆";
+        rotParts[5][l][j]  = String(CubeMap[5][l][j]) + "👉";
     }
     for (x=0;x<n;x++) s[x] = CubeMap[0][vl][x];
     if (w==2) for (x=0;x<n;x++) s[x+n] = CubeMap[3][x][l];
@@ -710,7 +785,7 @@ function roteX(m,w,f,nn=0) {
     if (nn==0) {
         fr = (n>>1)-1; to = n-fr-1;
         if (m>0) for(i=0;i<n;i++)for(j=0;j<n;j++)
-            rotParts[f][i][j] = CubeMap[f][i][j] + ""; 
+            rotParts[f][i][j] = String(CubeMap[f][i][j]) + ""; 
     } else {
         fr = nn - 1 ; to = n-fr-1;
     }
@@ -736,7 +811,7 @@ function RoteX(m,w,f,nn=0) {
     if (nn==0) { 
         fr = (n>>1)-1; to = n-fr-1;
         if (m>0) for(i=0;i<n;i++)for(j=0;j<n;j++)
-            rotParts[f][i][j] = CubeMap[f][i][j] + ""; 
+            rotParts[f][i][j] = String(CubeMap[f][i][j]) + ""; 
     } else {
         fr = nn-1 ; to = n-fr-1;
     }

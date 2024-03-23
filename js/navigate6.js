@@ -1714,9 +1714,8 @@ function flushB(tm,cnt=8,id="#solve3") {
             cnt>CounterB?flushB(tm,cnt,id):
                ($(id).css('background-color',""),CounterB=0,$("#proc32").prop('disabled',false));
         } else if(id=="#rotLayer"){
-            $(id).css('background-color',CounterB%2?'#ce4b42':'#ccc');
-            cnt>CounterB?flushB(tm,cnt,id):($(id).css('background-color',""),CounterB=0,
-            $("#rotLayer").html(""),kiir(),Counter=0,turnN++);
+            CounterB%2?$(id).hide():$(id).show();
+            cnt>CounterB?flushB(tm,cnt,id):($(id).show(),CounterB=0,$(id).html(""),kiir(),Counter=0);
         } else {
             $(id).css('background-color',CounterB%2?'#ce4b42':'#ccc');
             cnt>CounterB?flushB(tm,cnt,id):($(id).css('background-color',""),CounterB=0);
