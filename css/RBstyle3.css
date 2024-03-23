@@ -298,10 +298,9 @@ button:disabled {
 }
  /* === ボタンを表示するエリア ============================== */
 .sample1Area , .sample2Area {
- /*  margin         : auto;                中央寄せ           */
+  margin         : auto;                 /* 中央寄せ           */
   box-sizing     : content-box;          /* 枠線を含んだサイズ */
-  font-size      : x-small;
-  margin-bottom  : 4px ;                /*                    */
+  margin-bottom  : 2px ;                /*                    */
   width          : 32px;                /* ボタンの横幅       */
   height         : 54px;                /* ボタンの高さ       */
 }
@@ -316,6 +315,7 @@ button:disabled {
  /* === チェックボックスのラベル（標準） ==================== */
 .sample1Area label {
   display        : block;               /* ボックス要素に変更 */
+  font-size      : small;
   border         : 2px solid #aaa;      /* 枠線(一旦四方向)   */
   border-radius  : 4px;                 /* 角丸               */
   width          : 20px;                /* ボタンの横幅       */
@@ -332,6 +332,7 @@ button:disabled {
  /* === チェックボックスのラベル（標準） ==================== */
 .sample2Area label {
   display        : block;               /* ボックス要素に変更 */
+  font-size      : small;
   border         : 2px solid #aaa;      /* 枠線(一旦四方向)   */
   border-radius  : 4px;                 /* 角丸               */
   width          : 20px;                /* ボタンの横幅       */
