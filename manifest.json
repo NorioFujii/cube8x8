@@ -4,7 +4,7 @@
   "description": "ルービック・キューブお告げソルブのナビゲーター",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "iconCUBE.png",
       "sizes": "192x192 32x32",
       "type": "image/png"
     }
