@@ -353,7 +353,7 @@ function meteorWinker(top=top10,nextF=noop,hbt='tail') {
        $("#rotLayer").html(los);
        ((Counter>0)&&(met.length>0))?
            meteorWinker(met,nextF,hbt):
-           ((hbt=='tail')?(kiir(),turnN++,Counter=0):los=pwk,CounterB=0,nextF());
+           ((hbt=='tail')?(kiir(),turnN++,los="",Counter=0):los=pwk,CounterB=0,nextF());
      },speed*2); // 
 }
 function bodyWink() { 
