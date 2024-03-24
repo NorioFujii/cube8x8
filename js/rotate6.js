@@ -351,7 +351,9 @@ function meteorWinker(top=top10,nextF=noop,hbt='tail') {
                      $(t).css('transform') + ((hbt=='head')? ('">'+Nt(no,n)):'"> ')+'</div>';
        }
        $("#rotLayer").html(los);
-       met.length>0?meteorWinker(met,nextF,hbt):((hbt=='tail')?(kiir(),turnN++,Counter=0):los=pwk,CounterB=0,nextF());
+       ((Counter>0)&&(met.length>0))?
+           meteorWinker(met,nextF,hbt):
+           ((hbt=='tail')?(kiir(),turnN++,Counter=0):los=pwk,CounterB=0,nextF());
      },speed*2); // 
 }
 function bodyWink() { 
