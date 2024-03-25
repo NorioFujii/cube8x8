@@ -238,7 +238,7 @@ function kiir(n=N,so=false){
                                                creFaces(5*pw+501,-26,20*n+18,10*n-37,"X(-90deg)",n);
     }
     $("#cubeFields").html(r);
-    if (so) return;
+    if (LED||so) return;
     $("#rotLayer").html("")
     $(".mezo span").css("display",Disp);
 }
@@ -261,8 +261,8 @@ function creFaces(no,x,y,z,rotate,n=3) { // no:top of each face
             if (n==2) { j1 += j; clsM = CV2244[CV2244.indexOf(no3)+1] + j1; }
             else                 clsM = clsN;
             r += '<div class="mezo'+ unfold(clsM," szin",(n>2)?n:4)+Na(clsM,(n>2)?n:4)+ ' field mezo" ' + 'style="transform:'+segs+'">'+
-                 (Disp=="none"?"":'<span style="font-size:x-small; font-weight:bold">'+
-                                  (Face=="F"?"&nbsp;"+udfbrl:clsN) +'</span>')+'</div>';
+                 (LED||(Disp=="none")?"":('<span style="font-size:x-small; font-weight:bold">'+
+                                  (Face=="F"?"&nbsp;"+udfbrl:clsN) +'</span>'))+'</div>';
         }
     }
     return r;
@@ -322,6 +322,7 @@ function kiirRote(gost,e) {
         kiirRotLayer(posts,e,n,true);
         return false;
     }
+    return false;
 }
 function partsWinker(parts,bgn=0,hbt='body') {
     var n=N,lo="";
@@ -329,7 +330,7 @@ function partsWinker(parts,bgn=0,hbt='body') {
         var s = unfold(parts[i]," szin", n); 
         var t = "#cubeFields .mezo"+ s.slice(0,-6);
         lo += '<div class="mezo'+ s + Ns(parts[i],n) +' layer mezo" style="transform:'+ $(t).css('transform') +'">'+
-              ((hbt!='body')? Nt(parts[i],n):('<span class="winker">' + Nt(parts[i],n) + '</span>')) + '</div>'; //  
+              ((Nt(parts[i],n)=="")?"":(hbt!='body')? Nt(parts[i],n):('<span class="winker">' + Nt(parts[i],n) + '</span>')) + '</div>'; //  
     }
     return lo;
 }
@@ -434,7 +435,7 @@ function facerotate(e, a, tm, n=N) {
     if (e==43) odiv = crtDiv(core_e1[17],n)+crtDiv(core_e1[24],n); // M4
     $("#cubeFields").append(odiv);
     $("#rotLayer").append(odiv);
-    $(".mezo span").css("display",Disp);
+    if (!LED) $(".mezo span").css("display",Disp);
     facerote(a, tm);
 }
 function facerote(a, tm) {
