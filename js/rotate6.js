@@ -238,7 +238,7 @@ function kiir(n=N,so=false){
                                                creFaces(5*pw+501,-26,20*n+18,10*n-37,"X(-90deg)",n);
     }
     $("#cubeFields").html(r);
-    if (LED||so) return;
+    if (so) return;
     $("#rotLayer").html("")
     $(".mezo span").css("display",Disp);
 }
