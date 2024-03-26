@@ -239,7 +239,7 @@ function kiir(n=N,so=false){
     }
     $("#cubeFields").html(r);
     if (so) return;
-    $("#rotLayer").html("")
+    $("#rotLayer").html("");
     $(".mezo span").css("display",Disp);
 }
 const CV2244 = [1,1, 5,17, 9,33,13,49,17,65,21,81];
@@ -336,6 +336,7 @@ function partsWinker(parts,bgn=0,hbt='body') {
 }
 let top10,los,pwk,punit;
 function meteorWinker(top=top10,nextF=noop,hbt='tail') {
+    $("#rotLayer").css("display","block");
     if ((CounterB==0)&&(top.length==0)) {
         if (hbt=='tail') kiir(), turnN++;
         Counter = 0;
@@ -359,7 +360,8 @@ function meteorWinker(top=top10,nextF=noop,hbt='tail') {
 }
 function bodyWink() { 
         $("#rotLayer").html(pwk);
-        $(".winker").css('display','block');
+        $(".winker").show();
+        $("#rotLayer").show();
         Counter++;
         flushWinker(speed*4,4);
 }
