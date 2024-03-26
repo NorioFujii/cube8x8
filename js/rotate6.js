@@ -392,7 +392,7 @@ function kiirRotLayer(r,e,n=N,g=false){  // 書き直しのレイヤー選択
              lo += '<div class="mezo'+ s + (g?Ns(rr[i],n):Na(rr[i],n)) +
                    ' layer mezo" style="transform:' + $(t).css('transform') + '">' +
                    ((LED&&(e<50))?Nt(rr[i],n):$(t).html()) + '</div>';
-        $(t).hide();
+        if (lo.length>0) $(t).hide();
     }
     $("#rotLayer").html(lo);// facerotate()か、kiir()で表示
 }
