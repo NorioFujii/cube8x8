@@ -94,7 +94,7 @@ function normalPos(color=0) {
         rest5x5(-1);
         setRot(rot.split(","));
     }
-    RotOmt = $('input[name="noy"]').is(':checked')? 1:0;
+    if (N<6) RotOmt = $('input[name="noy"]').is(':checked')? 1:0;
     RotSft = 0;
 }
 function crtDiv(e,n=5) {  // キューブ層の仕切り
