@@ -1461,6 +1461,7 @@ function initCube(m=5) {
         $("#solve3").prop('disabled',true);
         $("#solve4").show();
         mini3x3(false);
+        RotOmt = 0;
     }
     kiirRotLayer(wholecube,99);
     kiir(m); NoRot = "";
