@@ -7,7 +7,7 @@
 */
 function beltCheck(color,any=0) {
     var belt=new Array(Nc(15),Nc(22),Nc(24),Nc(31),Nc(33),Nc(40),Nc(42),Nc(13));
-    if (any==0) return belt.includes(color);
+    if (any==0) return belt.indexOf(color);
     if (any>1) return belt.slice(0,any).includes(color);
     var hit = belt.filter(function(value, index, array) {
               return (value == color);
@@ -36,7 +36,7 @@ function YCCheck(c=Yellow) {
 }
 function hcorCheck(color) {
     var hcor=new Array(Nc(10),Nc(12),Nc(19),Nc(21),Nc(28),Nc(30),Nc(37),Nc(39));
-    return hcor.includes(color);
+    return hcor.indexOf(color);
 }
 function vcorCheck(color,cnt=false) {
     var vcor=new Array(Nc(1),Nc(3),Nc(7),Nc(9));
@@ -84,17 +84,17 @@ function nextY(n,go) {  //
     if (((go-n)==0)||((go-n)>=4)) return ["", go];
     return [",Y,Y,Y,Y".slice(0,(go-n)*2).replace(",Y,Y,Y",",y"), go];
 }
-function turnSftND(str) { // 回転記号をRotSft化して、非表示で回転する
+function turnSftND(str) { // 回転記号をRotSft化で取り換えて、非表示で回転する
     var rot,rote,rot1,rotm,rots = str.split(",");
     Counter = -1;
     for (rot in rots) {
         rote = rots[rot]; rot1 = rote.charAt(0);
         if (rot1.toUpperCase()=="Y") {
-            if (rot1=="Y") fd();
-            else           Fd();
+                if (rot1=="Y") fd();
+                else           Fd();
         } else if (rot1!="*") {
-//            rotm = Maprote.get(rot1);
-//            rote = ((typeof rotm==='string')?rotm.charAt(RotSft):rot1) +rote.slice(1);
+            rotm = Maprote.get(rot1);
+            rote = ((typeof rotm==='string')?rotm.charAt(RotSft):rot1) +rote.slice(1);
             turnStart(rote);
         }
     }
@@ -109,29 +109,32 @@ function WhiteX(m=0,color=White,ck=false) {  // 白クロスを形成する
         setTimeout("SolveNavi(8)",100);  // 9
         return true;
     }
-    var n=m, f = 0, l, Us2, Us = "*白色エッジを一旦上へ"+NoRot.replace(" ",",");
+    var n=m, l, Us2, Us = "*白色エッジを一旦上へ"+NoRot.replace(" ",",");
     // 白エッジを４個とも上面に上向きに上げる
     for (n=n;n<4;) {
         l=4;while ((l-->0)&&!(Nc(8)!=color)) { uu(),Us += ",U"; } // 正面エッジが白の間飛ばす
         if (l>0) { 
             const cube=new Array(    11,15,31,47, 29,     26,       22,   24,     20,    51,     35,      33);
             const move =         "L,F,l: F: f:F2:r,f:f,u,R,U:F,u,r,U,f:u,R,U:u,r,U,f:u,R2,U:u,R,U,f:u,R2,U,f".split(":");
-            var i = 0, f = 0;
-            for (i in cube)
+            var i = 0, f = 0, nn=-1;
+            for (i in cube) {
                 if (Nc(cube[i])==color)  {  // 監視範囲に白が居る
                     turnSftND(move[i].trim());
                     Us += ","+move[i].trim();
                     f++; break;
                 }
-            if (f==0) { // 監視範囲になかったので、次の面へ
-                if (Us.slice(-2)==",U") { ui(),Us = Us.slice(0,-2); }
-                turnSftND("Y"),Us += ",Y";
-                n++;
             }
-            else if (f>4) n = 4;
+            if (f==0) { // 監視範囲になかったので、次の面へ
+                if (Us.slice(-2)==",U") { ui(); Us = Us.slice(0,-2); }
+                Us2 = "Y"; 
+                turnSftND(Us2); Us += ","+Us2;
+                n++;
+            } else {
+               if (f>cube.length) n = 4;
+            }
         } else if (edgeCheck(color,2)==4) {
-                   [Us2,n] = nextY( n, 4 );    // 終了
-                   if (Us2!="") turnSftND(Us2),Us += Us2;
+               [Us2,n] = nextY( n, 4 );    // 終了
+               if (Us2!="") turnSftND(Us2),Us += Us2;
         }
     }
     // 白エッジを４個とも側面センターの色に合うよう横回転し、１８０°縦回転する
@@ -149,39 +152,52 @@ function WhiteX(m=0,color=White,ck=false) {  // 白クロスを形成する
     setRot(rewind(Us.replace(/U,U,U,/g,"u,").replace(/U,u,/g,"").replace(/U,U,/g,"U2,")));
     setTimeout("WhiteX("+n+","+color+")",100);
 }
-function otuge_edge(m=0) { // 相撲のマワシをエッジお告げで完成する
+function ikinari_edge(m=0) { // 上層のエッジをF2Lで横に降ろす。
     if ((Rotates.length>0)||(Counter>0)) {
-        Tid = setTimeout("otuge_edge("+m+")",NxPaus);
+        Tid = setTimeout("ikinari_edge("+m+")",NxPaus);
         return true;
     }
-    var n = m & 7, Us = ((n>0)&&(m<7))?"*残りあと"+(4-n)+"個":"*", Us2, rot , rots;
-    if (n<4) { // 奥エッジパーツは黄色を含まず、正面色と上面の色が合う面から始める
+    var n=m&7, Us2 = "", Us="", dbl = "";
+    save5x5();  // 現状の盤面保存
+//    do {
+      if (n<4) { // 前エッジパーツは黄色を含まず、正面色と側面の色が合う面から始める
         var l=4;
-        while ((l-->0)&&!((Nc(38)!=Yellow)&&(Nc(2)==Nc(23)))) { uu();  Us += ",U"; }
+        while ((l-->0)&&!((Nc(8)!=Yellow)&&(Nc(20)==Nc(23)))) { uu();  Us2 += ",U"; }
         if (l>=0) { // 左右両検査のため、0を含む
-            var face=",*お告げ・マワシ"+((m>7)? "修正":"形成")+"　　<span style='color:"+['#FF8C00','#006400','#8B0000','#0000CD','#FFD700','#C0C0C0','#C0C0C0'][Nc(23)-2]+
-                     "; font-weight:300;'>"+"　　橙緑赤青黄白白".charAt(Nc(23))+"面</span>から";
-        // White=8,Orange=2,Green=3,Red=4,Blue=5,Yellow=6
-        // RotMirr(2:345,3:452,4:523,5:234)　正面：左|奥|右のカラーコード
-        // 　お告げ（LorR）面の正面エッジを上層に上げる
-        // 　黄色面を９０°（LorR）横回転する
-        // 　お告げ（LorR）面のエッジを正面に９０°降ろす
-            var rc = (Nc(23)==Orange)?Blue:Nc(23)-1;
-            if (Nc(38)==rc) Us += face+"右腰,*#023832,R,U,r"; // turnSftND("R,U,r");
-            else            Us += face+"左腰,*#023814,l,u,L"; // turnSftND("l,u,L");
-        } else if (edgeCheck(Yellow)==4) {
-                   [Us2,n] = nextY( n, 4 );    // 終了
-                   // turnSftND(Us2);
-                   Us += Us2;
-               }
-        else { n++ ; Us = Us.replace(/\,U/g,"")+",Y"; }  // 正面の切り替え 実回転をする
-        while (++l<4) ui();
-        console.log(Us)
-        setRot(Us.replace(/U,U,U,/g,"u,").replace(/U,U,/g,"U2,").split(","));
-        setTimeout("otuge_edge("+((m>7)?(8+n):n)+")",100);
-        return true;
-    }
-    setTimeout("SolveNavi(16)",100);  // 2024.01.20
+                var cc = Nc(8)*Nc(23)+Nc(8)+Nc(23);
+                var face="*「いきなりF2L」"+" 　　　<span style='color:"+['#FF8C00','#006400','#8B0000','#0000CD','#FFD700','#C0C0C0','#C0C0C0'][Nc(23)-2]+
+                         "; font-weight:300;'>"+"　　橙緑赤青黄白白".charAt(Nc(23))+"面</span>で";
+                if (Nc(14)==Nc(8)) Us = face+"左エッジ"+Us2+(WTchk(7,12,cc)?",u":"")+",*#082014,f,L,F,l",(WTchk(7,12,cc)?ui():void(0)),turnSftND("f,L,F,l");
+                else               Us = face+"右エッジ"+Us2+(WTchk(9,21,cc)?",U":"")+",*#082032,F,r,f,R",(WTchk(9,21,cc)?uu():void(0)),turnSftND("F,r,f,R"); // 
+                dbl = Us.slice(-9,-8).toUpperCase();
+                if (dbl=="U") Us += ((Us.slice(-9,-8)=="U")?",u":",U"),((Us.slice(-9,-8)=="U")?ui():uu());
+        } else if (edgeCheck(Yellow,2)==4) {
+                   [Us2,n] = nextY( n, 4 );    // 終了で残りY回転数を返す
+        } else { n++ ; Us = Us2.replace(/\,U/g,"")+",Y"; }  // 正面の切り替え 実回転をする  ４回続くようであれば一度で済ませたい
+        if (Us=="") Us = Us2;
+        console.log(Us);
+        if (dbl!="U") {
+            Pause = true;
+            rest5x5();     // 盤面復活
+            setRot(Us.replace(/U,U,U,/g,"u,").replace(/U,U,/g,"U2,").split(",")); 
+            Pause = false;
+            setTimeout("ikinari_edge("+n+")",100);
+            return true;
+        }
+      }
+//     }   while ((n<4)&&((hcorCheck(White)>=0)&&(beltCheck(Yellow,1)==1)||
+//           (hcorCheck(White)<0)&&(beltCheck(Yellow,1)>0)));
+    Pause = true;
+    rest5x5();     // 盤面復活
+    setRot(("*お告げが続く"+Us).split(","));
+    Pause = false;
+    setTimeout("otuge_corner()",100);
+}
+function WTchk(f1,f2,cc) { // コーナー白で色組が同じ
+    var f3 = f2 + 7,c1=Nc(f1),c2=Nc(f2),c3=Nc(f3);
+    return ((c1==White)&&((c2*c3+c2+c3)==cc) ||
+            (c2==White)&&((c1*c3+c1+c3)==cc)&&(Nc(8)!=c1) ||
+            (c3==White)&&((c1*c2+c1+c2)==cc)&&(Nc(8)!=c1) ) ;
 }
 function BoCW(f1,f2) { // 下面のみ白含み、上面白なし
     return (Nc(f1)!=White) && (Nc(f2)!=White) &&
@@ -192,17 +208,18 @@ function otuge_corner(n=0) { // 下段４コーナーをコーナーお告げに
         Tid = setTimeout("otuge_corner("+n+")",NxPaus);
         return true;
     }
-    // 　２層４面のエッジベルトに黄色を含んでいたら、上面エッジを降ろし合わせる
-    if (beltCheck(Yellow)) {
-        let rot = ("*マワシ修復発生"+",Y,Y,Y,Y".slice(0,(n%4)*2));
-        console.log(rot);
-        setRot(rot.split(","));
-        setTimeout("otuge_edge(11)",100);  // 修復モード　８＋３(n)
-        return true;
-    }
-    var Us = "*お告げ・４本脚"+NoRot.replace(" ",","), Us2, l = 4;
+    var Us = "*お告げ・F2L下層移動"+NoRot.replace(" ",","), Us2, l = 4;
     if (n<4) {
-      if (!hcorCheck(White)) { [Us2,n] = nextY( n, 4 ); Us += Us2; }
+      // 　２層４面のエッジベルトに黄色を含んでいたら、上面エッジを降ろし合わせる
+      if ((hcorCheck(White)>=0)&&(beltCheck(Yellow,1)==1)||
+           (hcorCheck(White)<0)&&(beltCheck(Yellow,1)>0)) {
+          var rot = ("*エッジ降ろし発生"+",Y,Y,Y,Y".slice(0,(n%4)*2));
+          console.log(rot);
+          setRot(rot.split(","));
+          setTimeout("ikinari_edge(11)",80);  // 修復モード　８＋３(n)
+          return true;
+      }
+      if (hcorCheck(White)<0) { [Us2,n] = nextY( n, 4 ); Us += Us2; }
       else { // 奥左右コーナーの白横か？その時正面色が合うまで横回転
           Us = ""; l=4;
           while ((l-->0)&&!(((Nc(10)==White)&&(Nc(1)==Nc(23)))||((Nc(30)==White)&&(Nc(3)==Nc(23))))) { uu();  Us += ",U"; }
@@ -218,7 +235,7 @@ function otuge_corner(n=0) { // 下段４コーナーをコーナーお告げに
                  else if (Nc(31)==Nc(23)) Us += ",*#300337,R,U,r2,u,f,U,F2,R,f"; // 縦２連
                  else Us += face+"右スロットイン,*#300337,R,u,r,U,r,F," +
                             (BoCW(30,37)?"u,R,":"R,") + (BoCW(12,19)?"u,f":"f"); // 沈み判定
-          else { n++; Us = Us.replace(/\,U/g,"")+",Y"; }
+          else { n++; Us = Us.replace(/\,U/g,"")+",Y"; } // 正面の切り替え 実回転をする  ４回続くようであれば一度で済ませたい
           while (++l<4) ui();
       }
       console.log(Us);
@@ -237,7 +254,7 @@ function otuge_corner(n=0) { // 下段４コーナーをコーナーお告げに
             setTimeout("SolveNavi(18)",100);
             return true;
         }
-        Us = "*白跳ね上げ"+NoRot;
+        Us = "*白跳ね上げ"+NoRot.replace(" ",",");
         if (Nc(9)==White) {
             Us = "*お告げ・コーナー白上"; l = 4;
             var a21 = Nc(21), a28 = Nc(28);
@@ -250,16 +267,16 @@ function otuge_corner(n=0) { // 下段４コーナーをコーナーお告げに
                       Us += ",*セクシームーブ３回で　スロットイン,*#0921282431,R,U,r,u,R,U,r,u,R,U,r";
                 } else {
                     console.log('白上の土台のベルト位置が見つからない');
-                    otuge_edge(8);
+                    ikinari_edge(8);
                     return true;
                 }
             }
-        } else if (Nc(27)==White) Us += ",f,U2,F";
-          else if (Nc(34)==White) Us += ",R,U2,r";
-          else if ((Nc(48)==White)&&((Nc(27)!=Nc(23))|| (Nc(27)!=Nc(24)))) Us += ",f,U2,F";
+        } else if (Nc(27)==White) Us += ",f,U,F,u";
+          else if (Nc(34)==White) Us += ",R,u,r";
+          else if ((Nc(48)==White)&&((Nc(27)!=Nc(23))|| (Nc(27)!=Nc(24)))) Us += ",f,U,F";
           else { n++; Us = "Y"; }
-        while (++l<4) { fd2(),fd(),uu(); Us+=",y"; } 
-        if (Us.indexOf("U")>0) {
+        while (++l<4) { Fd(),uu(); Us+=",y"; } 
+        if (Us.toUpperCase().indexOf("U")>=0) {
             if (n%4>0) Us = (Us+",y,y,y,y".slice(0,(n%4)*2)).replace(",y,y,y",",Y");
             n = 0;
         }
@@ -269,7 +286,7 @@ function otuge_corner(n=0) { // 下段４コーナーをコーナーお告げに
         return true;
     }
     if (n%4>0) Us = (Us+",y,y,y,y".slice(0,(n%4)*2)).replace(",y,y,y",",Y");
-    if (hcorCheck(White)) {
+    if (hcorCheck(White)>=0) {
         setRot(("*お告げが続く"+Us).split(","));
         setTimeout("otuge_corner()",100);
         return true;
@@ -614,7 +631,7 @@ function SolveNavi(s=0) {
     if (Nc(5)==White) {
         setRot(["*黄色上面"]);
     　　if (n==0) setRot(["**"]);
-        normalPos();
+        if (RotSft>0) normalPos();
         Rotates.push("X2");
         setTimeout("SolveNavi("+n+")",100);
         return true;
@@ -632,36 +649,17 @@ function SolveNavi(s=0) {
 // ２層のエッジベルトが黄色を４個含むまで、上面黄色エッジを降ろす
 // ４個でなくエッジベルトのうち、パーツ位置が違っている分だけ黄色降ろしでもよい。
 // White=8,Orange=2,Green=3,Red=4,Blue=5,Yellow=6
-    var l = 4, y = 4, Us = "*帯・黄ばみ降ろし|エッジベルトが黄色を４個含むまで"+NoRot.replace(" ",",");
-    if (n<12) { //
-        $("#proc04").prop('disabled',false);
-        var beltY = beltCheck(Yellow,1) + n;
-        if (beltY==12) {
-            setRot(Us.split(","));
-            setTimeout("SolveNavi(12)",100); return true; }
-        while ((l-->0)&&!((Nc(8)==Yellow)||(Nc(20)==Yellow))) { uu(); Us += ",U"; }
-        if (l>=0) {
-            while ((y-->0)&&(beltCheck(Yellow,2)&&((Nc(24)==Yellow)||(Nc(31)==Yellow)))) { ui(),fd(); Us += ",u,Y"; }
-            if (y>0)
-                if ((Nc(24)!=Yellow)&&(Nc(31)!=Yellow)&&(Nc(31)*Nc(24)!=Nc(32)*Nc(23))) Us += ",R,u,r,*#2431"; // 位置違いなら黄色を降ろす
-                else if          (!beltCheck(Yellow,2)&&(Nc(15)*Nc(22)!=Nc(14)*Nc(23))) Us += ",l,U,L,*#1522"; // 位置違いなら黄色を降ろす
-                else Us = Us.replace(/\,u\,Y/g,""), n++;
-            while (++y<4) fd2(),fd(),uu();
-            while (++l<4) ui();
-        } else { Us = Us.replace(/\,U/g,""); } 
-        console.log(Us);
-        setRot(Us.replace("U,U,U,","u,").replace("U,U,","U2,").split(",")); 
-        setTimeout("SolveNavi("+n+")",100);
-        return true;
-    }
+    var l = 4, y = 4, Us = "*「いきなりF2L」|エッジベルトが黄色を４個含むまで"+NoRot.replace(" ",",");
 // ２層４面の黄ばみのないエッジベルトのため、センター色に合わせて上面エッジから降ろす
     
     if ((n<16)&&(edgeCheck(Yellow,2)==0)) {
-        otuge_edge(0);
+        $("#proc16").prop('disabled',false);
+        ikinari_edge(0);
         return true;
     }        
 // 以下を下段４コーナー分繰り返すと、F2L終了状態となる
     if ((n<18)&&(cornerOK(White)<8)) {
+        $("#proc16").prop('disabled',false);
         otuge_corner();
         return true;
     }        
@@ -858,7 +856,7 @@ function yellow2x2(n) {
     var l;
     const RS="*隣接交換 黄色一面に向け D'R D L'D'R'D R D が可,*$5758626159606364,d,R,D,l,d,r,D,R,D",
           TK="*対角交換 黄色一面に向け R'D'B'D B R D が可,*$0304070809101314,r,d,b,D,B,R,D";
-    var Us = "*最終検査"+NoRot;             
+    var Us = "*最終検査"+NoRot.replace(" ",",");             
     if (n==34) { // 終了時、４隅定位置の色合わせ(上：白、下：黄色)
         if (faceTest()==0) {
             setTimeout("solve2x2(34)",100);
@@ -874,7 +872,7 @@ function yellow2x2(n) {
         setTimeout("solve2x2(34)",100);
         return true;
     }
-    Us = "*隣接・対角調査"+NoRot;
+    Us = "*隣接・対角調査"+NoRot.replace(" ",",");
     var i,targ=["","D","D2","d"],dist=[36,144,300,96];  // 隣接検査表(交換可能距離４点)
     // White=8,Orange=2,Green=3,Red=4,Blue=5,Yellow=6
     // 隣との距離が候補４個に入るなら、そのパーツを優先配置して隣接交換可を検証

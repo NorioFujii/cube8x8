@@ -59,6 +59,7 @@ function mini3x3(sw=true) { // 3x3 mini picture
         $("#miniCube").attr('src','notation-Mini.html?j3x3='+json3x3());
         $("#miniCube").show();
         if (sw!=0) $("#comment").html("休止を解除してください");
+//        if ($('input[name="noy"]').is(':checked')) SetTimeout('miniCube.RotOmt = 1',500);
         pause();
     } else {
         $("#miniCube").attr('src','');
@@ -72,6 +73,7 @@ function normalPos(color=0) {
     }
     var f,rot="";
     if (color==0) save5x5(-1);
+    RotOmt = 0;
     for (f=0;f<6;f++) { if (CubeMap[f][N>>1][N>>1]==White) break; }
     if (f<6) {
          ([fd,zz,Bor,Zz,bor,bor2][f]());  // fd is dummy
@@ -92,6 +94,8 @@ function normalPos(color=0) {
         rest5x5(-1);
         setRot(rot.split(","));
     }
+    RotOmt = $('input[name="noy"]').is(':checked')? 1:0;
+    RotSft = 0;
 }
 function crtDiv(e,n=5) {  // キューブ層の仕切り
     var trans="";
@@ -950,7 +954,7 @@ const Fd=(m=0) => {  // y move
     RoteX(m,1,5); roteX(m,1,0);
 }
 const fd2=(m=0) => {
-    for (var i=0;i<N;i++) MoveHori(m,2,i);
+    for (var i=0;i<(N==2?4:N);i++) MoveHori(m,2,i);
     roteX(m,2,5); RoteX(m,2,0);
 } 
 const uu=(m=0) => {
