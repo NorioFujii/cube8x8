@@ -1755,9 +1755,11 @@ function cubeFlush(rote,cnt=8) {
          no = ((rote.charAt(n)>"9")?-60:0)+ (rote.charCodeAt(n)-48)*10 + rote.charCodeAt(n+1)-48;
          if (rote.charAt(1)=="#") { // 仮想3x3でのキューブ番号
              if (N==3) cn = MC3[no][RotSft]; // 
-             else      cn = layer3N[MC3[no][RotSft]]; // 
-             cof= c.indexOf(cn); if (cof>=0) np = dl_add((N-2)**2,1,cof);
-             eof= eg.indexOf(cn);if (eof>=0) np = dl_add((N-2)*2,2,eof);
+             else  {
+		cn = layer3N[MC3[no][RotSft]]; // 
+             	cof= c.indexOf(cn); if (cof>=0) np = dl_add((N-2)**2,1,cof);
+             	eof= eg.indexOf(cn);if (eof>=0) np = dl_add((N-2)*2,2,eof);
+	     }
          }
          else if (RotSft==0) cn = no;
          else cn = no; // layer3N[MC3[no][RotSft]];
