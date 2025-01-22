@@ -232,7 +232,7 @@ function egMoveX(p1,p2,p3,p4) { // p2=0の時、eg[p1]をp3へ移動する
         else  { cmnt = "*エッジペア探索" + (d>0?"内側":"") +(lr==0?"・左":"・右") +
                " *$"+cubeAdrs(eg[pTwo]) +cubeAdrs(eg[pTwo+1]) +
                NoRot + " " + rTwo;
-          if (opener && opener.document.getElementsByName('pythonQ')) {
+          if (opener && (opener.document.getElementsByName('pythonQ').length>0)) {
               parent.ClipDT = cmnt.slice(18);
               opener.document.getElementsByName('pythonQ')[0].contentDocument.body.innerHTML = cmnt;
           }
@@ -551,7 +551,7 @@ function knotMoveX(p1,p2,p3,p4,Fcolor=0) { // ３エッジパーツの中央を�
     else {
         cmnt = "*エッジ"+[(N===8)?"中央２個":"中央１個","ペア中央","中央左右","中央５個"][d] + ((lr<1)?"・前":"・後") +
                " *$"+cubeAdrs(pOne)+cubeAdrs(CubeNo(p3[0],p3[1],p3[2]))+cubeAdrs(ret[1]) + NoRot+" "+rTwo;
-        if (opener && opener.document.getElementsByName('pythonQ')) {
+        if (opener && (opener.document.getElementsByName('pythonQ').length>0)) {
             parent.ClipDT = cmnt.slice(18);
             opener.document.getElementsByName('pythonQ')[0].contentDocument.body.innerHTML = cmnt;
         }
@@ -939,10 +939,6 @@ function centr9(color,n=N) {  // 全キューブのCenter扱い
     rot = rot.replace(/,U,U,U,U/g,"").replace(/,F,F,F,F/g,"").replace(/,F,F,F/g,",f").
               replace(/,D,D,D,D/g,"").replace(/,Y,Y,Y,Y/g,"");
     console.log(rot);
-    if (opener && opener.document.getElementsByName('pythonQ')) {
-        parent.ClipDT = rot;
-        opener.document.getElementsByName('pythonQ')[0].contentDocument.body.innerHTML = preRot+rot;
-    }
     if ((n>5)&&(centNEQ(n+d-3,0)))  // (n-2)コアが揃っていない
         console.log("%d枠の"+"橙緑赤青黄白白".charAt(color-2)+"が揃っていない",Over5+2+(N%2)*2);
 
@@ -1367,23 +1363,30 @@ function SelCubeT(m) {
         N = Number(m);
     }
     $("#statusBlk").html(saveSTinfo);
+    if ((N<5) &&(location.search.slice(0,7)=="?repeat")) {
+                  initVirgin(N);
+                  faceFloat(); accel(); allTest();
+                  return;
+    }
     initVirgin(N);
 }
 function initVirgin(m=5){
     var n = m, i, j;
     if (Auto) {
-        if      (location.search.slice(0,4)=="?2x2") N=2,n=2;
-        else if (location.search.slice(0,4)=="?3x3") N=3,n=3;
-        else if (location.search.slice(0,4)=="?4x4") {
+        Cool = 0;
+        if      (location.search.slice(7,10)=="2x2") {
+                  $("#toggle2").prop("checked", true).change();
+                  SelCubeT(2); 
+        }
+        else if (location.search.slice(7,10)=="3x3") {
+                  $("#toggle3").prop("checked", true).change();
+                  SelCubeT(3); 
+        }
+        else if (location.search.slice(7,10)=="4x4") {
                   $("#toggle4").prop("checked", true).change();
-                  SelCubeT(4); return; }
-        else if (location.search.slice(0,4)=="?5x5") {
-                  $("#toggle5").prop("checked", true).change();
-                  $("#toggleB5").prop("checked", true).change();
-                  SelCubeT(5); return; }
-        if (n==2) $("#toggle2").prop("checked", true).change();
-        if (n==3) { $("#toggle3").prop("checked", true).change();
-                  SelCubeT(3); return; }
+                  SelCubeT(4);
+        }
+        if (N<5) return;
     }
     $("#toggle5").removeAttr('checked').prop("checked", false).change();
     if ((m>=4)&&(N!=m)) n = N; 
@@ -1421,7 +1424,7 @@ function initVirgin(m=5){
     if ($("#display").hasClass('is-visible')) sceneOFF(setCube);
     if ((window.name=="cube3dg")||(window.name=="cube3dh")) setTimeout("checkRot()",100);
     if (Auto & (location.search.slice(0,7)=="?repeat")) {
-         accel(); Cool=1; allTest();
+         accel(); allTest();
     }
 }
 function initCube(m=5) {
@@ -1546,7 +1549,7 @@ function waitFin(cnt=20) {
     if (Comment.indexOf(' Fin')>0) {
           var result = faceTest();
           console.log(log);
-          if (opener && opener.document.getElementsByName('pythonQ')) 
+          if (opener && (opener.document.getElementsByName('pythonQ').length>0)) 
                opener.document.getElementsByName('pythonQ')[0].contentDocument.body.innerHTML = log;
           Disp="none"; Pause=false; Face="F"; RotSft=0;Rotates=[]; 
           clearTimeout(Tid); clearTimeout(Tid2);
@@ -1755,11 +1758,11 @@ function cubeFlush(rote,cnt=8) {
          no = ((rote.charAt(n)>"9")?-60:0)+ (rote.charCodeAt(n)-48)*10 + rote.charCodeAt(n+1)-48;
          if (rote.charAt(1)=="#") { // 仮想3x3でのキューブ番号
              if (N==3) cn = MC3[no][RotSft]; // 
-             else  {
-		cn = layer3N[MC3[no][RotSft]]; // 
-             	cof= c.indexOf(cn); if (cof>=0) np = dl_add((N-2)**2,1,cof);
-             	eof= eg.indexOf(cn);if (eof>=0) np = dl_add((N-2)*2,2,eof);
-	     }
+             else {
+                 cn = layer3N[MC3[no][RotSft]]; // 
+                 cof= c.indexOf(cn); if (cof>=0) np = dl_add((N-2)**2,1,cof);
+                 eof= eg.indexOf(cn);if (eof>=0) np = dl_add((N-2)*2,2,eof);
+            }
          }
          else if (RotSft==0) cn = no;
          else cn = no; // layer3N[MC3[no][RotSft]];
