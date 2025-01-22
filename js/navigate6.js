@@ -1365,7 +1365,7 @@ function SelCubeT(m) {
     $("#statusBlk").html(saveSTinfo);
     if ((N<5) &&(location.search.slice(0,7)=="?repeat")) {
                   initVirgin(N);
-                  faceFloat(); accel(); allTest();
+                  FaceF = ""; faceFloat(); accel(); allTest();
                   return;
     }
     initVirgin(N);
