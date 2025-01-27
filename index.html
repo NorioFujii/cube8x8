@@ -216,7 +216,7 @@ for (var y = 0; y < 6; y++) {
 	<div class="commands">
 		<div class="commandExplain" onDBLclick='faceNum()'>拡張機能:<span id="hdnstop" style="display: none;">　　　　一時停止:&nbsp;<input type=text id="stop" size=1 value="0"></span></div>
 		<button class="commandb" type=button onclick="faceFloat()" role="tooltip" data-microtip-position="bottom" aria-label="裏側をのぞき見する" data-microtip-size="small">三面鏡</button>
-		<button class="commandb" type=button onclick="initVirgin()" onDBLclick="location.reload(true)">初期化</button>
+		<button class="commandb" type=button onclick="Auto=false;initVirgin();" onDBLclick="location.reload(true)">初期化</button>
 		<button class="commandb" type=button onclick="scramble()" id="scrm3x3" role="tooltip" data-microtip-position="bottom" aria-label="Scramble!">スクランブル</button>
 		<button class="commandb" type=button onclick="pause()" style="width: 33px">休止</button>
 		<button class="commandb" type=button onclick="accel()" style="width: 35px" onDBLclick='accel(2)' role="tooltip" data-microtip-size="small" data-microtip-position="bottom" aria-label="高速と低速　交互切替">変速</button>
