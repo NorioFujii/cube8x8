@@ -127,8 +127,8 @@ function crtDiv(e,n=5) {  // キューブ層の仕切り
         e==26&&(trans="translate3d(  3px,-46px,  0px) rotateX(-90deg)");
         e==23&&(trans="translate3d(  3px,-46px,  0px) rotateX(0deg)");
         e==25&&(trans="translate3d(  3px,-46px,  0px) rotateX(0deg)");
-        e==28&&(trans="translate3d(  3px,-46px, 40px) rotateX(0deg)");    // Cf
-        e==29&&(trans="translate3d(  3px,-46px, 16px) rotateX(0deg)");    // Cb
+        e==28&&(trans="translate3d(  3px,-46px,  3px) rotateX(0deg)");    // Cf
+        e==29&&(trans="translate3d(  3px,-46px, -3px) rotateX(0deg)");    // Cb
     } else if (n==5) {
         e==1&&(trans="translate3d(  3px,-78px,  0px) rotateX(-90deg)");
         e==6&&(trans="translate3d(  3px,-10px,  0px) rotateX(-90deg)");
@@ -435,7 +435,7 @@ function facerotate(e, a, tm, n=N) {
     else if ((e>37)&&(e<40)) e-=23;  //  15,16
 //    rotParts = new Array(6);
     const core_e1 =[0,1,2,3,4,5,6,2,1,0,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29];
-    const core_e2 =[0,0,0,0,0,0,0,4,6,0, 0, 2, 4, 0, 6, 3, 0,10,11,12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const core_e2 =[0,0,0,0,0,0,0,4,6,0, 0, 2, 4, 0, 6, 3, 0,10,11,12, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0];
     var odiv = crtDiv(core_e1[e],n)+((core_e2[e]>0)&&((n<6)||(e<15))?crtDiv(core_e2[e],n):"");
     if (e==41) odiv = crtDiv(core_e1[18],n)+crtDiv(core_e1[19],n); // Mt
     if (e==43) odiv = crtDiv(core_e1[17],n)+crtDiv(core_e1[24],n); // M4
