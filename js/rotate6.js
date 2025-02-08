@@ -514,7 +514,7 @@ function checkRot() {
         }
     }
     else if ((window.name=="cube3d") || (parent.swin==null) || (parent.swin.closed)) {
-        if (opener && opener.Rotates.length>0) {
+        if (opener && opener.Rotates && (opener.Rotates.length>0)) {
             rot = regRot(opener.Rotates.trim().split(" "));
             opener.Rotates = "";
             setRot(rot);
@@ -532,7 +532,7 @@ function checkRot() {
                     $("#parity").attr('disabled',true);
                 }
                 cssNN(N==2?4:N,0);
-                if ((Cool>0)&&(rote=="*Fin")) waitFin();
+                waitFin((Cool>0)?20:-1);
             } else if (rote.charAt(1)=="*") { // step reset 
                 Comment = rote.slice(2);
                 turnN=1; check33(); kiir();
@@ -1173,9 +1173,9 @@ function symset(sym) {
     turnN = 1;
     ClipDT = sym;
     kiirRotLayer(wholecube,99),kiir();
-    if (opener) {
-        opener.document.getElementsByName('pythonQ')[0].contentDocument.body.innerHTML += sym;
-        if (typeof opener.ClipDT!=="undefined") opener.ClipDT = sym;
+    if (opener && (opener.document.getElementsByName('pythonQ').length>0)) {
+            parent.ClipDT = cmnt.slice(18);
+            opener.document.getElementsByName('pythonQ')[0].contentDocument.body.innerHTML = cmnt;
     }
     else $("#comment").html("スクランブル記号列：「DUMP」ボタン");
     // フォーカスをあてる
