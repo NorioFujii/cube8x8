@@ -1544,7 +1544,7 @@ function faceTest(f2l=false) {
     return 0;
 }
 function waitFin(cnt=20) {
-     var i, cour=Math.max(1,Cool), log = '【Trial count:'+cour+' Moves:'+turnN+'】';
+     var i, cour=Math.max(1,Cool), log = '【Trial count:'+cour+' Moves:'+(--turnN)+'】';
 
     if (Comment.indexOf(' Fin')>0) {
           var result = faceTest();
@@ -1559,14 +1559,16 @@ function waitFin(cnt=20) {
               console.log(ClipDT);
           } else {
               console.log("%c"+log,"color:green");
-              $("#Trial").html("Cours: "+ cour);
               if (isNaN(Average[N])) Average[N] = turnN;
               else Average[N] = Math.ceil((Average[N]*Cool+turnN)/(Cool+1));
+              if (Auto) $("#Trial").html("Cours: "+ cour);
+              else      $("#Trial").html("Average: "+ Average[N]);
               if (cnt>0) setTimeout('allTest();',cnt*100);
           }
           turnN = 1;
     }
 }
+
 async function clipIn() {
     return (await navigator.clipboard.readText()
     .then((text) => {
