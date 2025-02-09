@@ -198,7 +198,7 @@ function ikinari_edge(m=0) { // 上層のエッジをF2Lで横に降ろす。
     }
     Pause = true;
     rest5x5();     // 盤面復活
-    if ((++usw&2)==0) Us += ",u";
+    if ((++usw&1)==0) Us += ",u";
         console.log(Us);
     setRot(("*お告げが続く"+Us).split(","));
     Pause = false;
