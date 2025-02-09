@@ -1560,9 +1560,9 @@ function waitFin(cnt=20) {
           } else {
               console.log("%c"+log,"color:green");
               if (isNaN(Average[N])) Average[N] = turnN;
-              else Average[N] = Math.ceil((Average[N]*Cool+turnN)/(Cool+1));
-              if (Auto) $("#Trial").html("Cours: "+ cour);
-              else      $("#Trial").html("Average: "+ Average[N]);
+              else Average[N] = Math.round((Average[N]*Cool+turnN)/(Cool+1));
+              if (Face=="F") $("#Trial").html("Cours: "+ cour);
+              else           $("#Trial").html("Average: "+ Average[N]);
               if (cnt>0) setTimeout('allTest();',cnt*100);
           }
           turnN = 1;
