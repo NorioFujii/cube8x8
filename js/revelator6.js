@@ -485,11 +485,11 @@ function clk2move(n=0) {
         if (n%2==0) {
             if ((Nc(4)==Yellow)||(Nc(8)==Yellow)) Us += ",U";
         } else if (Nc(6)==Yellow) Us += ",u";
-    } else Us = "*お告げ・時計パーム3+3へ,F,R,U,r,u,f";
+    } else Us = "*お告げ・時刻パーム3+3へ,F,R,U,r,u,f";
     while (++l<4) ui();
     if (Us.slice(-1)!="f") Us += ((n%2==0)?
-                              ",*お告げ・時計パーム３":
-                              ",*お告げ・時計パーム3+3で　魚準備")+
+                              ",*お告げ・時刻パーム３":
+                              ",*お告げ・時刻パーム3+3で　魚準備")+
                               ",*#3003370629,r,u,f,U,F,R";
     console.log(Us);
     setRot(Us.replace("U,u,","").replace("U,U,U,","u,").replace("U,U,","U2,").split(",")); // 
@@ -990,7 +990,7 @@ function yellow2x2(n) {
         } else console.log('Target [',j,']が無い');
     }
     else {  // 交換ゼロか2個以上交換可能
-        Us = "*時計パーム3+3 "+(8-multiNab.size); // 隣接対象外
+        Us = "*時刻パーム3+3 "+(8-multiNab.size); // 隣接対象外
         while ((l>0)&&!(Nc(21)*Nc(8)*Nc(11)==60)){
             l--; Dw(); Us += ",D"; } // 本来パーツを21番へ
         if (l>0) {                         //        60
