@@ -1150,19 +1150,19 @@ function scramble(){
     symset(sym);
 }
 function scramble2(){
-    var i,j,sym="";
-    const rot2 = "R,R',U,U',F,B',F',D,B,D',L,L'".split(",");
+    var i,j,sym="",osym="";
+    const rot2 = "R,R',U,U',F,B',F',D,B,D',L,L',R,R'".split(",");
     initCube(2);
-    for(i=0;18>i;i++)rand=Math.floor(12*Math.random()),sym+=rot2[rand]+" ",
+    for(i=0;18>i;i++) rand=Math.floor(12*Math.random()),rand+=(osym.slice(0,1)==rot2[rand].slice(0,1))?2:0,osym=rot2[rand],sym+=osym+" ",
         0==rand&&Rw(),1==rand&&rw(),2==rand&&Uw(),3==rand&&uw(),4==rand&&Fw(),5==rand&&bw(),
         6==rand&&fw(),7==rand&&Dw(),8==rand&&Bw(),9==rand&&dw(),10==rand&&Lw(),11==rand&&lw();
     symset(sym);
 }
 function scramble3(){
-    var i,j,sym="";
-    const rot3 = "U,U',U2,F,F',F2,D,D',D2,B,B',B2,R,R',R2,L,L',L2".split(",");
+    var i,j,sym="",osym="";
+    const rot3 = "U,U',U2,F,F',F2,D,D',D2,B,B',B2,R,R',R2,L,L',L2,U,U',U2".split(",");
     initCube(3);
-    for(i=0;32>i;i++)rand=Math.floor(18*Math.random()),sym+=rot3[rand]+" ",
+    for(i=0;32>i;i++) rand=Math.floor(18*Math.random()),rand+=(osym.slice(0,1)==rot3[rand].slice(0,1))?3:0,osym=rot3[rand],sym+=osym+" ",
         0==rand&&uu(),1==rand&&ui(),2==rand&&u2(),3==rand&&ff(),4==rand&&fi(),5==rand&&(f2()),6==rand&&dd(),7==rand&&di(),8==rand&&(d2()),9==rand&&bb(),
       10==rand&&bi(),11==rand&&(b2()),12==rand&&rr(),13==rand&&ri(),14==rand&&(r2()),15==rand&&ll(),16==rand&&li(),17==rand&&l2();
     symset(sym);
