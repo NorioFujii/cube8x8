@@ -51,24 +51,24 @@ solrote[2] = "F-,U,F,B-,U-,B";
 solrote[3] = "U-,L,U,L-,U,B,U,B-,F-,U-,F,U2,F,U,F-";
 solrote[4] = "R,U-,R-,U2,R,U-,R-,B,U-,B-,U2,B,U-,B-";
 solrote[5] = "U2,B-,U,B,U2,B-,U,B,U2,F,R,U-,R-,F-,U2,L-,U-,L,U,F,U-,F-,U2,F,U-,F-";
-solrote[6] = "U2,*隣接交換,L,R-,U-,R,U,L-,U-,R-,U,R,U-,*3時ムーブ,R-,U-,F-,U,F,R,U-,*6時ムーブ,R-,U-,F-,U,F,R";
+solrote[6] = "U2,*隣接交換,L,R-,U-,R,U,L-,U-,R-,U,R,U-,*時刻パーム３,R-,U-,F-,U,F,R,U-,*時刻パーム3+3,R-,U-,F-,U,F,R";
 solrote[7] = "U-,R-,U-,R,U-,R-,U2,R";
-solrote[8] = "U,*くるくるパーム左,*#0110,L,U,L-,U,L,U2,L-";
+solrote[8] = "U,*黄十字パーム左,*#0110,L,U,L-,U,L,U2,L-";
 solrote[9] = "U-,*お迎えパーム橙,*#0629,M2,U-,M,U2,M-,U-,M2,U";
 solrote[11] = "*手前赤お告げ青,*#0820,U,F-,U-,F,*群発見,*#2829,B,U-,B2,U2,B,*手前緑お告げ橙,*#0820,L,U,L-,*手前青お告げ橙,*#0238,L-,U-,L,U-,*手前橙お告げ緑,*#0921,B-,U,B,U2,B-,U,B,U2,*手前青お告げ赤,*#0719,*手前青お告げ橙,*#0921,R,L-,U-,R-,U2,R,U-,R-,U,L,*お告げ橙後半,U2,L-,U,L,U";
-solrote[12] = "*3時ムーブ,*#0328,R-,U-,F-,U,F,R,U-,*6時ムーブ,*#0328,R-,U-,F-,U,F,R,U-,*肩からパーム,*#0328,R-,U-,R,U-,R-,U2,R";
+solrote[12] = "*時刻パーム３,*#0328,R-,U-,F-,U,F,R,U-,*時刻パーム3+3,*#0328,R-,U-,F-,U,F,R,U-,*肩からパーム,*#0328,R-,U-,R,U-,R-,U2,R";
 solrote[13] = "*斜め２組交換,*#04110820,M-,U,M2,U,M2,U,M-,U2,M2,U-";
 note[1] = "白面十字揃え";
 note[2] = "黄ばみマワシ";
 note[3] = "マワシ黄ばみ取り";
 note[4] = "マワシ脚出し(右2本)";
 note[5] = "マワシ脚出し(左2本)";
-note[6] = "隣接交換/36ムーブ";
-note[7] = "肩くるくるパー厶";
-note[8] = "混血くるくるパー厶左";
+note[6] = "隣接交換/時刻パーム";
+note[7] = "黄十字パーム肩";
+note[8] = "黄十字パーム左";
 note[9] = "お迎えパーム橙";
 note[11] = "参考：お告げF2L";
-note[12] = "36隣接/十字交換";
+note[12] = "隣接/十字交換パーム";
 
 function ptnset(i) {
     var ii = i; if (i>=10) ii = 4;
@@ -177,7 +177,7 @@ function openOnly(obj) {
 </script>
 </head>
 <body background="images/nth_wood_blocks_bg.gif" bgcolor="#F8E2C7" onload="setLsner()">
-<h1 title="お告げソルブで、悩まずに廻して１分台で完成！">お告げによるルービックキューブ攻略Navi　<font size=3> 第６版　2024.12.30
+<h1 title="お告げソルブで、悩まずに廻して１分台で完成！">お告げによるルービックキューブ攻略Navi　<font size=3> 第７版　2025.2.10
 </h1>
 <details><summary>
 【プロローグ】<br>
@@ -209,7 +209,7 @@ function openOnly(obj) {
 　３）中段マワシの黄ばみを取る<br>
 　４）マワシから下段に脚を出す<br>
 ５）最上層に黄色の魚を作る<br>
-６）くるくるパームで黄色一面<br>
+６）黄十字パームで黄色一面<br>
 ７）上層の側面の色を、お迎えで揃える<br>
 いずれも、それぞれの段で必要なピースを、上段奥・側面に現れた色の<br>
 左右の面から上にお迎えし、上段で合流させる。そして元の場所に戻す。<br>
@@ -225,17 +225,17 @@ function openOnly(obj) {
 　(旧)・中間層の「マワシ黄ばみ」発見時、「エッジお告げ」に従い、黄ばみを取る<br>
 ・「コーナーお告げ」に従い、マワシから脚４本を最下層に出す<br>
 ・下層２段が完成したら、上層４コーナーの位置を確定する<br>
-　　隣接交換９割と、対角交換（くるくるムーブ）１割を使う<br>
+　　隣接交換パーム９割と、対角交換パーム１割を使う<br>
 ・上層面の形が全面黄色か魚型でないなら、「時のお告げ」に従う<br>
-　　３時ムーブ（２時 45 分を含む、針なしは捻後セクシー）＋６時ムーブ<br>
-　　３時・６時ともに、「くるくるムーブ」を使う<br>
-・魚型にするために、肩の位置や腰の位置から「くるくるパーム」を使う<br>
+　　時刻パーム３（２時 45 分を含む、針なしは捻後セクシー）＋時刻パーム3+3<br>
+　　３時・3+3時ともに、「時刻パーム」を使う<br>
+・魚型にするために、肩の位置や腰の位置から「黄十字パーム」を使う<br>
 　　＋（右手横）や蝶々の形（左手上＆右足横）なら、右横面の肩パームで魚にする<br>
 　　亀形の黄色手足４つが上横下横か上横下肢に４本伸びていれば肩パーム、<br>
  　手だけ２本＆足なしの場合は、腰パームを廻して魚型にする<br>
 ・魚型になったら、パーツ横の黄色無し３パーツの面を感知し、<br>
 　その面に対向する面の、黄色が正面の手近に来る様に左右に置いて<br>
-「くるくるパーム」を実施し、全面黄色にする<br>
+「黄十字パーム」を実施し、全面黄色にする<br>
 　この時、下図中グレーの部分は黄色以外の何色でもよい（V3 から）<br>
 ・全面黄色の側面は、３種の「お迎え」パターンの一つを告げている<br>
 　お迎えすれば、それがゴールの形となる<br>
@@ -248,7 +248,18 @@ function openOnly(obj) {
 　・「手前色」を中央キューブ色の上に上面横回転で並べる。<br>
 　・白エッジピース４個を180°ずつ、最下層迎え先に縦回転する。<br>
 　このステップは、いわゆる「力技」でも十分ですよね。<br>
-　
+<br>
+　V7から、「そうめん流し」ヒントのクロス決めができます。<br>
+　＜白クロスの新戦略＞上記手順より１０手程のお得<br>
+　上段（黄面）から白含みエッジをそうめん流しのごとく、2連を<br>
+　構成させ乍ら下段（白面）に導き４個配置。中下段の孤立も救済しつつ。<br>
+　1.中段の白エッジ横二連を90度回転<br>
+　2.（Upper面回して）白エッジ縦二連を180度回転<br>
+　3.上段から90度回し、中段で横二連にして下へ90度回転<br>
+　　（必要ならU'して回し、捻った面は戻す）<br>
+　4.下段孤立、なければ中段孤立の白エッジを上段に救済<br>
+　　（上段に回した面は、U'後戻す）<br>
+　5.下段に４個揃うまで繰り返す（途中の１～３で完了）　
 </details>
 　　　<img src="https://mori1-hakua.tokyo/images/CUBE0.png" width=120>
 
@@ -277,7 +288,7 @@ function openOnly(obj) {
 </details>
 　　　<img src="https://mori1-hakua.tokyo/images/CUBEy.png" width=120>
 <details><summary>
-　(旧)(3)中段マワシの黄ばみを取る<br>
+　(旧)(3)中段マワシの黄ばみを取る（自然に取れることを期待する方が早い）<br>
 　　マワシが中央色に揃ったら、今後１個でも切れ次第、早めに修復する！<br>
 </summary>
 　・上面奥のエッジ部に、上面が手前色であるエッジピースを横回転する。<br>
@@ -341,43 +352,44 @@ function openOnly(obj) {
 (5)最上層コーナーの交換と黄色の魚形<br>
 　上層４コーナーの位置を確定させた後、黄色の魚形に導く。</summary>
 　　同色の面を持つコーナーピース二つが１辺にあれば、その色の面に回転させ、<br>　　隣接交換となる。<br>
-　　対角交換ムーブか隣接交換の回転型を使って４コーナーの色を揃えた後、<br>
-　　三六・棒六・点棒三六のいずれかのエッジ「時のお告げ」ムーブで黄色の魚の形を作る。<br>
-  　なお、対角交換で時刻読みの棒になっているときは、FRUR'U'F'（捻りセクシー）で即座に魚形に変えられる。<br>
-　　「時のお告げ」ムーブの回転型は開始位置が異なるだけで、回転手順は全く同じものである。<br>
-　　なお、くるくるパーム回転型を応用することで、手数が縮むケースもある。<br>
-　　くるくるパームには、開始位置によって、<br>
+　　対角交換パームか隣接交換パームの回転型を使って４コーナーの色を揃えた後、<br>
+　　三六・棒六・点棒三六のいずれかのエッジ時刻パームで黄色の魚の形を作る。<br>
+　　なお、対角交換で時刻読みの横棒（2時45分）になっているときは、<br>
+　　　　　FRUR'U'F'（捻りセクシー）で即座に魚形に変えられる。<br>
+　　時刻パームの回転型は開始位置が異なるだけで、回転手順は全く同じものである。<br>
+　　なお、黄十字パーム回転型を応用することで、手数が縮むケースもある。<br>
+　　黄十字パームには、開始位置によって、<br>
 　　　・左廻し専用の「肩からパーム（十字横・蝶・亀手前）」と<br>
 　　　・左廻し専用の「腰からパーム（亀手開）」と<br>
-　　　・最終段階の左右廻しの「黄混血パーム」がある。<br>
+　　　・最終段階の左右廻しの「魚最終パーム」がある。<br>
 　↓　↓　　↓　<br>
-　点→横棒→３時→６時→十字（コーナー交換）⇒魚型十字<br>
-　　　　　↓→→→↑↓→亀・蝶・十字　　　　⇒魚型十字<br>
+　点→横棒→３時→3+3時→十字（コーナー交換）⇒魚型十字<br>
+　　　　　↓→→→↑ ↓→亀・蝶・十字　　　　　⇒魚型十字<br>
 　↓　↓<br>
 　点→横棒→３時⇒黄色一面<br><br>
-　ほとんどの場合が、次のエッジ時計読み３コースのくるくるムーブ後、くるくるパームとなる。<br>
-　・点ー棒ー三ー六<br>
-　　RUR'U'F'（捻りセクシー）→6時ムーブの２手順で短縮可<br>
-　・棒ー六<br>
-　・三ー六<br>
+　ほとんどの場合が、次のエッジ時刻読み３コースの時刻パーム後、黄十字パームとなる。<br>
+　・点ー棒ー三ー3+3<br>
+　　FRUR'U'F'（捻りセクシー）→3+3時パームの２手順で短縮可<br>
+　・棒ー3+3<br>
+　・三ー3+3<br>
 <details  name="fishCross"><summary>
 　＜上層面黄色の点・横棒・十字・蝶・亀とは＞</summary>
 <p>まずは上層面に、黄色のV字型(Ｌ字型・カギ)<img src="https://mori1-hakua.tokyo/images/Ltype.png" align="absmiddle">を作る。 参考：<a href="https://www.pazru.net/LBL/1/oll.html" target=_blank>ＯＬＬ</a><br>
 　　・コーナー４キューブの正規位置を確認し、位置がずれていれば、<br>
-　　　対角同士の交換が必要ならくるくるムーブ、隣接２個のコーナーの交換が<br>
-　　　必要になっていれば、ここを右側に置いて「隣接交換」で確定する。<br>
+　　　対角同士の交換が必要なら「対角交換パーム」、隣接２個のコーナーの交換が<br>
+　　　必要になっていれば、ここを右側に置いて「隣接交換パーム」で確定する。<br>
 　　・上層面黄色が点(・)<img src="https://mori1-hakua.tokyo/images/dottype.png" align="absmiddle">や横棒(-)<img src="https://mori1-hakua.tokyo/images/linetype.png" align="absmiddle">なら<br>
-　　　点(・)は好きな位置／棒(-)は右端　で くるくるムーブを実施し、V字型にする。<br>
+　　　点(・)は好きな位置／棒(-)は右端　で 対角交換パームを実施し、V字型にする。<br>
 　　・V字(L)<img src="https://mori1-hakua.tokyo/images/Ltype.png" align="absmiddle">なら、４コーナーが揃っていれば、エッジの位置が<br>
-　　　３時となるくるくるムーブを実施し６時につなげる。４つ共にずれていれば、６時だけ１回で良い。<br>
+　　　３時となる時刻読みパームを実施し3+3時につなげる。４つ共にずれていれば、3+3時だけ１回で良い。<br>
 <br>
-V字型の後、エッジ「時のお告げ」３時短針の下側(６時)を右手に持ち、くるくる<b>ムーブ</b>で魚の形にする。<br>
+V字型の後、エッジ「時のお告げ」３時短針の下側(６時)を右手に持ち、<b>時刻読みパーム</b>で魚の形にする。<br>
 魚以外の形の場合の成形：<br>
 　・1角黄色の場合はV字(L)が含まれているので、上記参照、<br>
 　・2角黄色で魚の尻尾３本(蝶)<img src="https://mori1-hakua.tokyo/images/iglass.png"><font color=yellow>■(右下)</font>の場合は、尻尾を手前に、右上親指、<br>
 　・0角黄色(十字形)<font color=yellow>(左上)■<img src="https://mori1-hakua.tokyo/images/crosstype.png" align="top">■(右上)</font>の場合も、黄色横開きを奥に、右上親指、<br>
 　・2角黄色で亀形<img src="https://mori1-hakua.tokyo/images/kame.png" align="top">の場合は、左右肩光では右肩、光横開き<font color=yellow>(左上)■<img src="https://mori1-hakua.tokyo/images/kame.png" align="top">■(右上)</font>の<br>
-　　　場合は亀腰に、それぞれ親指を当て、くるくる<b>パーム</b>で魚の形にする。<br>
+　　　場合は亀腰に、それぞれ親指を当て、<b>黄十字パーム</b>で魚の形にする。<br>
 <br>
 　　　要は、黄色手足４つがピーンと伸びていれば肩から、手だけの場合は、腰から廻して魚にする。<br>
 </details>
@@ -388,7 +400,7 @@ V字型の後、エッジ「時のお告げ」３時短針の下側(６時)を�
 　　　<img src="https://mori1-hakua.tokyo/images/CUBEyellowKameV.png" width=70>
 　　　<img src="https://mori1-hakua.tokyo/images/CUBEyellowKameH.png" width=70>
 
-<details><summary>　くるくる<b>ムーブ</b>:R’U’F’UFR　　</summary>
+<details><summary>　<b>対角交換パーム</b>:R’U’F’UFR　　</summary>
 　　<img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle">
 → <img src="https://mori1-hakua.tokyo/images/U-.gif" align="absmiddle">
 → <img src="https://mori1-hakua.tokyo/images/F-.gif" align="absmiddle">
@@ -400,14 +412,14 @@ V字型の後、エッジ「時のお告げ」３時短針の下側(６時)を�
 　　<img src="https://mori1-hakua.tokyo/images/CUBE2.png" width=100>
 <img src="https://mori1-hakua.tokyo/images/CUBE3.png" width=100>
 <details><summary>
-(6)くるくるパーム８手で黄色一面を作る<br>
-　<font color=red>⇩</font>の矢印位置から、左右くるくるパームを１発仕掛ける。</summary>
-　　上段側面３個に黄色を含まない面(A)の対面(B)から、くるくるパーム回転を<br>
+(6)黄十字パーム８手で黄色一面を作る<br>
+　<font color=red>⇩</font>の矢印位置から、黄十字パーム左右を１発仕掛ける。</summary>
+　　上段側面３個に黄色を含まない面(A)の対面(B)から、黄十字パーム回転を<br>
 　　１回実施して、全面黄色にする。一気にゴールとなる場合もある。<br>
 <br>
 <details><summary>
-くるくるパーム（左手）:LUL’ULU2L’　　 左廻し（Xp-a）<br>
-　　　　　　　　（右手）R’U’RU’R’U2 R  　右廻し (Xp-b)</summary>
+黄十字パーム（左手）:LUL’ULU2L’　　 左廻し（Xp-a）<br>
+　　　　　　　（右手）R’U’RU’R’U2 R  　右廻し (Xp-b)</summary>
 　　<img src="https://mori1-hakua.tokyo/images/L.gif" align="absmiddle">
 → <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
 → <img src="https://mori1-hakua.tokyo/images/L-.gif" align="absmiddle">
@@ -445,11 +457,11 @@ V字型の後、エッジ「時のお告げ」３時短針の下側(６時)を�
 　　　<img src="https://mori1-hakua.tokyo/images/CUBE9.png" width=120><br>
 
 </div>
-<details><summary>　【動画】くるくるパームでFinish ！<br>
+<details><summary>　【動画】黄十字パームで黄色一面！<br>
 </summary>　<video src="https://mori1-hakua.tokyo/images/CubeGoal.mp4" width=500 height=300 controls autoplay muted loop></video>
 </details>
 <details><summary>　【参考】暗記する５つの回転手順</summary>
-<details><summary>　くるくる<b>ムーブ:</b> R' U' F' U F R <button type="button" onclick="RotCopy(this)">コピー</button><br>
+<details><summary>　<b>時刻読みパーム:</b> R' U' F' U F R <button type="button" onclick="RotCopy(this)">コピー</button><br>
 　　主に、時のお告げの対応で使う。<br>
 　　上面の４コーナーの対角交換としても使われる。</summary>
 　　<img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle">
@@ -459,7 +471,7 @@ V字型の後、エッジ「時のお告げ」３時短針の下側(６時)を�
 → <img src="https://mori1-hakua.tokyo/images/F.gif" align="absmiddle">
 → <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
 </details>
-<details><summary>　くるくる<b>パーム:</b> L U L' U L U2 L' <button type="button" onclick="RotCopy(this)">コピー</button> 　左廻し（Xp-a）<br>
+<details><summary>　<b>黄十字パーム:</b> L U L' U L U2 L' <button type="button" onclick="RotCopy(this)">コピー</button> 　左廻し（Xp-a）<br>
 　　　　　　　　　 :<span> R' U' R U' R' U2 R <button type="button" onclick="RotCopy(this)">コピー</button> 右廻し (Xp-b)</span></summary>
 　　<img src="https://mori1-hakua.tokyo/images/L.gif" align="absmiddle">
 → <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
@@ -478,7 +490,7 @@ V字型の後、エッジ「時のお告げ」３時短針の下側(６時)を�
 → <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
 <br>
 　　開始位置によって、左廻し専用の「肩からパーム」「腰からパーム」<br>
-　　そして最終段階の左右廻し「黄混血パーム」があり、すべてくるくるパームである。
+　　そして最終段階の左右廻し「魚最終パーム」があり、すべて黄十字パームである。
 </details>
 <details><summary>　隣接交換:<span> L R' U' R U L' U' R' U R <button type="button" onclick="RotCopy(this)">コピー</button></span></summary>
 　　隣接２個のコーナー交換が必要になっていれば、ここを右側に置いて次で確定する。<br>
@@ -583,25 +595,25 @@ V字型の後、エッジ「時のお告げ」３時短針の下側(６時)を�
 　　　　　　　　６１手→３９手で　５）へ進むことができる。<br>
 <p></p>
 　　　　　なお、お告げF2Lを使った場合は、次に示す<BR>
-　　　　　エッジ読み三・六ムーブ・十字交換に加えて、くるくるパーム、でゴールとなる。
+　　　　　エッジ時刻読み三・3+3パーム・十字交換に加えて、黄十字パーム、でゴールとなる。
 <p></p>
 </details>
 </details>
 <details><summary>　　(5)上層面を黄色の魚型にする</summary>
 <details name="solve"><summary>　　　・上段４コーナーのピース交換で正しい位置にする<br>
 　　　　　４コーナーの位置が２か所ずれているので隣接交換し、<br>
-　　　　　３時のパターンになるので、エッジ読み三・六ムーブで揃える。<br>
+　　　　　３時のパターンになるので、エッジ時刻読み３・3+3パームで揃える。<br>
 </summary>
 <p></p>
 </details>
-<details name="solve"><summary>　　　・肩くるくるパー厶を実施する<br>
-　　 　　上面黄色を、肩くるくるパー厶で魚型にする。
+<details name="solve"><summary>　　　・黄十字パー厶肩を実施する<br>
+　　 　　上面黄色を、黄十字パー厶肩で魚型にする。
 </summary>
 <p></p>
 </details>
 </details>
-<details name="solve"><summary>　　(6)くるくるパームで黄色一面を作る<br>
-　　 　　黄色混血位置からのくるくるパームで黄色面を完成させる。
+<details name="solve"><summary>　　(6)黄十字パームで黄色一面を作る<br>
+　　 　　黄色混在位置からの黄十字パームで黄色面を完成させる。
 </summary>
 <p></p>
 </details>
@@ -718,4 +730,6 @@ V字型の後、エッジ「時のお告げ」３時短針の下側(６時)を�
 </div><br>
   By N.Fujii　　<a href="javascript:location.reload(true)" title="詳細を閉じる"><b>Top</a><br><br>
 </body>
+</html>
+
 </html>
