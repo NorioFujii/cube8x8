@@ -1426,6 +1426,7 @@ function initVirgin(m=5){
     if (Auto & (location.search.slice(0,7)=="?repeat")) {
          accel(); allTest();
     }
+    ClipDT = "";
 }
 function initCube(m=5) {
     var i,j;
