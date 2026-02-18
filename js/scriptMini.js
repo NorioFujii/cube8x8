@@ -47,7 +47,7 @@ function step(){
         setTimeout('goPython("Set")',100);  // Reverse scramble
     }
 }
-var Rev = 0, RotOmt = 0 ;
+var Rev = 0 ;
 
 function crtDiv(e) {
     let trans="";
@@ -210,11 +210,6 @@ function checkRot(n=3) {
             rote = Rotates.shift();
         }
         $("#comment").html(Comment);
-        if ((RotOmt==1)&&rote&&(rote.toUpperCase()=="Y")) {
-            if (rote=="Y") RotSft = (RotSft+1) & 3;
-            else           RotSft = (RotSft+3) & 3;
-            rote = null;
-        }
         if (rote) {
             Urot = rote;
             $("#turn").html(String(turnN));

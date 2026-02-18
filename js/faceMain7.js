@@ -108,7 +108,14 @@ function init() {
     if      (N==4) $("#game").css({ "width":"184px","height":"192px" });
     else if (N==5) $("#game").css({ "width":"184px","height":"192px" });
     else           $("#game").css({ "width":"138px","height":"138px" });
-    $("#gamePad").html('<br><br><br><br><br><br>'.slice(0,44-N*8));
+    $("#gamePad").html(
+'<div class="fieldF5" data-colorcd="8" style="background-color: white; color: green;">9</div>' +
+'<div class="fieldF5" data-colorcd="2" style="background-color: orange; color: green;">9</div>' +
+'<div class="fieldF5" data-colorcd="3" style="background-color: green; color: white;">9</div>' +
+'<div class="fieldF5" data-colorcd="4" style="background-color: red; color: white;">9</div>' +
+'<div class="fieldF5" data-colorcd="5" style="background-color: blue; color: white;">9</div>' +
+'<div class="fieldF5" data-colorcd="6" style="background-color: yellow; color: green;">9</div>');
+    $("#gamePad").css({ "padding-top":"20px","width":"220px","height":"40px" });
 }
 function XYRotate(symbol) {
     RotOmt = 0;
@@ -154,7 +161,7 @@ function Cbb(no,n=3) {
     }
 }
 function faceCheck(color) {
-    var rr, lay = (N==2)?layer24:(N>3)?wholecube:layer34;
+    var rr, lay = (N==2)?layer24:(N>3)?wholecube:layer3N;
     if (typeof(lay[0])=='object') rr = lay[0].concat(lay.slice(1)), lay = rr;
 
     var hit = lay.filter(function(value, index, array) {
@@ -424,18 +431,23 @@ function faceRefresh(cube,col,face=false) {
     var cb = cube - 1;
     CubeMap[2][Math.floor(cb%(N*N)/N)][cb%N] = color;
     kiir();
-    if ((!face)&&(N==3)) cubeFlush("*$"+cube,8);
+    if ((!face)&&(N==3)) cubeFlush("*$"+cubeAdrs(cube),8);
     if ((!face)&&(N==4)) cubeFlush("*$"+cube,8);
     if ((!face)&&(N==5)) cubeFlush("*$"+cubeAdrs(cube),8);
+    if ((!face)&&(N==3)) for (var acol in [8,2,3,4,5,6]) {
+        var n = faceCheck([8,2,3,4,5,6][acol]);
+        if (n>0) $("#gamePad>div").eq(acol).html(String(n)); 
+    }
 }
 var CubeData = new Array(3);
 
 function saveCube() {
-    if ((N==3)&&(!window.confirm('実キューブに二十数手で戻しますか(Cancel)？ アプリ上だけ(OK)ですか？'))) {
-        goPython("RVS");
-	localStorage.setItem('rubic_8x8',readCookie('_CubeStatus'));
-    }
-    else if (window.localStorage)
+     setTimeout('solveCube()',0);
+}
+function solveCube() {
+    if ((N==3)&&(window.confirm('AIにて初期状態に戻しますか(OK)？ 現状保存のみ(キャンセル)ですか？'))) {
+        goMin2PH("RVS");
+    } else if (window.localStorage)
      if ((faceTest()!=0)||(window.confirm('整っている状態です。保存せず戻りますか(Cancel)？ 保存(OK)しますか？'))) {
         normalPos();
         CubeData[0] = Cool  ;
@@ -445,17 +457,21 @@ function saveCube() {
         CubeData[3] = CubeMap;
 	var json = JSON.stringify(CubeData);
 	localStorage.setItem('rubic_8x8', json);
+        initCube(N) ;
     }
-    initCube(N) ;
 }
 function restCube() {
     if (window.localStorage) {
 	var json = localStorage.getItem('rubic_8x8');
         if (!json) { $("#comment").html("Nothing pattern saved.");return; }
+        $("#rotate").html("");
+        $(".lowerRot").css("font-size","16px");
+        $("#comment").html("COPYの結果を記号列入力できます<br>");
         if (json.charAt(0)=="*") {
-            navigator.clipboard.writeText(json);   
+//            navigator.clipboard.writeText(json);   
+            clearTimeout(Tid2);
             setRot(regRot(json.split(",")));
-            turn("");
+            setTimeout("checkRot()",1000);
         }
 	else {
             CubeData = JSON.parse(json);
@@ -473,105 +489,30 @@ function restCube() {
 }
 
 let preRot = "";
-function goPython(rev) {
-    if ((rev=='RVS')&&
-        (!window.confirm('現在の状態(OK)だとネット接続が必要です。'))) {
-        navigator.clipboard.writeText(ClipDT);   
-        $("#comment").html(ClipDT);
-        initCube(3) ;
-        return;
-    }
-    var rotation = "";
-// const White=8,Orange=2,Green=3,Red=4,Blue=5,Yellow=6
-    var r=new Array(1,10,39,3,37,30,9,28,21,7,19,12,52,45,16,54,36,43,48,27,34,46,18,25);
-    var e3=new Array(42,13,40,33,24,31,22,15,2,38,6,29,8,20,4,11,53,44,51,35,47,26,49,17); //W,Y,G,B優先
-    var cx8=new Array(80,160,96,48,60,120,72,36);           // WOB,WRB,WGR,WGO,YBO,YBR,YGR,YGO
-    var cx12=new Array(17,29,19,11,53,44,35,26,41,34,27,20); // BO,BR,GR,GO,WB,WR,WG,WO,YB,YR,YG,YO
-    var i=0,time=5,ix,dx, corner="[", corner_d="[", edge="[", edge_d="[", c0=new Array();
-    preRot="";
-        if (Nc(5)!=White) for (i=0;(i<4)&&(Nc(5)!=White);i++) { preRot+=" X'"; bor(); }
-        if (i==4) { preRot="";for (i=0;(i<4)&&(Nc(5)!=White);i++) { preRot+=" Z'"; fd2(),fd(),bor(),fd(); }}
-        for (i=0;(i<4)&&(Nc(23)!=Green);i++) { preRot+=" Y'"; fd2(),fd(); }
-        for (i=0;i<24;i+=3) {
-            c0[0]=Nc(r[i]),c0[1]=Nc(r[i+1]),c0[2]=Nc(r[i+2]);
-            ix = cx8.indexOf(c0[0] * c0[1] * c0[2]); if (ix<0) return ("ix<0 in cx8");
-            dx = c0.findIndex(function(v,n,a) { return (v==White || v==Yellow);});
-            corner   += ix + ((i>20)?"]":",");
-            corner_d += dx + ((i>20)?"]":",");
-        }
-        for (i=0;i<24;i+=2) {
-            c0[0]=Nc(e3[i]); c0[1]=Nc(e3[i+1]);
-            ix = cx12.indexOf(c0[0] * c0[1] + c0[0]+ c0[1]);
-            if (ix<0) return ("ix<0 in cx12"); 
-            if ((ix==3) && ((c0[0]==White) || (c0[1]==White))) ix = 4; 
-            if (((c0[0]==White) || (c0[0]==Yellow)) ||
-                (!((c0[1]==White) || (c0[1]==Yellow)) &&
-                 ((c0[0]==Blue)  && (ix<2))          ||
-                 ((c0[0]==Green) && (ix<4))))     dx = 0;
-            else dx = 1;
-            edge   += ix + ((i>21)?"]":",");
-            edge_d += dx + ((i>21)?"]":",");
-        }
-    console.log(corner+','+corner_d+','+edge+','+edge_d);
-    if (rev=="CHK") return ("");
-    cloudGo(corner,corner_d,edge,edge_d,time,rev);
-    $("#rotate").html("");
-    $("#comment").html("Cloud computing!");
-    setTimeout('$("#comment").html(RotA); pause();',1600*time);
-    flushB(200,4*time,"#comment");
-    if (rev=="CHK") return ("");
+function goMin2PH(rev) {
+     // 回転結果の面の各ステッカの色を[8:U,2:L,3:F,4:R,5:B,6:D]として、U面、R面、F面、D面、L面、B面の順に54文字並べる
+     var search = new min2phase.Search();
+     const stecker="  LFRBD U ";
+     var cubeR = "", face,steckX,steckY;
+     for (face=0;face<6;face++)
+         for (steckY=0;steckY<3;steckY++)
+             for (steckX=0;steckX<3;steckX++)
+                 cubeR += stecker.charAt(CubeMap[[0,3,2,5,1,4][face]][steckY][steckX]) ;
+     console.log("Go! "+cubeR);
+        start = performance.now();
+        rot = search.solution(cubeR, 21);
+        console.log("Solution="+rot);
+        console.log('Done. Average: ', (performance.now() - start), 'ms');
+     Solution = "**Solution_"+(String(performance.now() - start).slice(0,5)+"ms "+rot).trim().replaceAll('  ',' ');
+     $("#rotate").html("");
+        $(".lowerRot").css("font-size","16px");
+        clearTimeout(Tid2);
+        setRot(regRot(Solution.split(" ")));
+        setTimeout("checkRot();",200);
+     localStorage.setItem('rubic_8x8',"*0c," +Solution.replace(/ /g,','));
+     if (rev=="CHK") return ("");
 }
 RotA = "";
-function cloudGo(corner,corner_d,edge,edge_d,time,rev=null) {
-    $(function(){
-      $.ajax({
-        url:"https://mori1-hakua.tokyo/python/Cube2phase_Fast3.py",
-        type:"POST",
-//        async: false,
-        data: {'value1':corner, 'value2':corner_d, 'value3':edge, 'value4':edge_d,'time':time },
-        dataType:"text",
-        timeout: 10000
-      })
-      .done((data) => {
-    //成功した場合の処理
-        pause();
-        window.focus();
-        var rot = data.slice(data.indexOf('<div ')+16,data.indexOf('</div>'));
-        $("#solve3").attr('disabled',true);
-        clearTimeout(Tid2); Rotates = [];
-        if (rev=="CHK") {
-            if (rot.indexOf('None *Fin')>0) alert("キューブのパーツに捻れがあり解けない");
-//            sceneOFF(setCube); setFaces();
-            return ("");
-        }
-        if (rev=="RVS") {
-            initCube(3) ;
-            var rvsRot = (preRot + " " +rot.slice(19,-5)).trim();
-            setRot(["*0c"]);
-            setRot(["!"].concat(regRot(rvsRot.split(" "))));
-            setRot(["*"]);
-            var seqR = (rvsRot.split(" ")).map(function (value, index, array) {
-                 return (value.slice(0,1)+
-                         (value.slice(1,2)=="'"? value.slice(2):"'"+value.slice(1)));
-                });
-            RotA = "*0c "  + seqR.reverse().toString().replace(/,/g,' ') + " *";
-            navigator.clipboard.writeText(RotA);  // "! * "+rvsRot+" *0c");   
-            writeCookie('_CubeStatus='+RotA.replace(/ /g,','));  
-        }
-        else {
-            setRot(["!"].concat(regRot((preRot + " " + rot).trim().split(" "))));
-        }
-        setTimeout("checkRot();check33();",100);
-        if ((NoRot=="")&&(!navigator.userAgent.match(/iPhone|Android.+/))) Pause = false;
-      })
-      .fail((data) => {
-    //失敗した場合の処理
-        if (rev=="CHK") return;
-        console.log(data.responseText+"　Retry?");  //レスポンス文字列を表示(502を経験）
-        setTimeout("goPython("+rev+")",3000);
-      })
-    });
-}
 // Cookie書き込み cookie:'_aaa=xxx'
     function writeCookie(cookie) {
       document.cookie = cookie;

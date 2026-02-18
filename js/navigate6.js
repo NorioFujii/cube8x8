@@ -1267,12 +1267,23 @@ function SftOmit(){
     }
     RotSft = 0;
 }
-function demo(){
+let wakeLock = null;
+async function demo(){
     if (Cool>0){
         Auto = false;
         Cool = 0;
+        if (wakeLock) wakeLock.release().then(() => {
+            wakeLock = null;
+        });
     } else {
         Cool = 1;
+        // 起動ロックの参照を作成
+        try {
+          wakeLock = await navigator.wakeLock.request("screen");
+        } catch (err) {
+          // 起動ロックのリクエストに失敗。ふつうはバッテリーなどのシステム関連
+          console.log( `${err.name}, ${err.message}` );
+        }
         allTest();
     }
 }
@@ -1351,7 +1362,7 @@ function Nt(a4x4,n=N) { // LED=trueの時 6x8x8 上で左上部分の指定パ�
     var face = a4x4-1; // console.log(face);
     return rotParts[Math.floor(face/(n*n))][Math.floor((face%(n*n))/n)][face%n].slice(1);
 }
-let N = 5; Disp="none", Face="F", FaceF="", LED=false, Counter=0;
+let N = 5, Disp="none", Face="F", FaceF="", LED=false, Counter=0;
 let Comment="", Tid=null,Tid2=null, turnN=1, ClipDT="", W=null;
 let Rotates = new Array(), Tlog = 0, Solution = "";
 let RotSft=0, Urot = "", Urote = "";
@@ -1361,11 +1372,19 @@ function SelCubeT(m) {
     if (m) {
         Auto = false;
         N = Number(m);
+        cubex = (N==3)?-30:-20;
+        rotCube();
     }
     $("#statusBlk").html(saveSTinfo);
     if ((N<5) &&(location.search.slice(0,7)=="?repeat")) {
                   initVirgin(N);
                   FaceF = ""; faceFloat(); accel(); allTest();
+                  return;
+    }
+    if ((N<5) &&(location.search.slice(0,7)=="?whiteX")) {
+                  initVirgin(N);
+                  opt.sayu.value = "L";
+                  FaceF = ""; faceFloat(); allTest();
                   return;
     }
     initVirgin(N);
@@ -1420,7 +1439,7 @@ function initVirgin(m=5){
     $("#sample1check").removeAttr('checked').prop("checked", LED).change();
     $("#sample2check").removeAttr('checked').prop("checked", false).change();
     $("#comment").html("");  $("#turn").html("&nbsp;"); $("#rotate").html("&nbsp;");
-    initCube(n); Cool = 0; 
+    initCube(n); Cool = 0; Rotates=[]; 
     if ($("#display").hasClass('is-visible')) sceneOFF(setCube);
     if ((window.name=="cube3dg")||(window.name=="cube3dh")) setTimeout("checkRot()",100);
     if (Auto & (location.search.slice(0,7)=="?repeat")) {
@@ -1430,7 +1449,7 @@ function initVirgin(m=5){
 }
 function initCube(m=5) {
     var i,j;
-    Center = false; setOverNo(0); RotSft=0; Rotates=[]; CubeMap = new Array(6);
+    Center = false; setOverNo(0); RotSft=0; CubeMap = new Array(6);
     for (var i=0;i<6;i++) {
         CubeMap[i] = new Array(8);
         for (var j=0;j<8;j++) CubeMap[i][j] = [];
@@ -1550,26 +1569,25 @@ function waitFin(cnt=20) {
     if (Comment.indexOf(' Fin')>0) {
           var result = faceTest();
           console.log(log);
-          if (opener && (opener.document.getElementsByName('pythonQ').length>0)) 
-               opener.document.getElementsByName('pythonQ')[0].contentDocument.body.innerHTML = log;
+//          if (opener && (opener.document.getElementsByName('pythonQ').length>0)) 
+//               opener.document.getElementsByName('pythonQ')[0].contentDocument.body.innerHTML = log;
           Disp="none"; Pause=false; Face="F"; RotSft=0;Rotates=[]; 
           clearTimeout(Tid); clearTimeout(Tid2);
-          if (result!=0) { 
+          if ((result!=0)&&(opt.sayu.value=="R")) { // "L"なら初期の配置型に揃える
               Auto = false;
               console.log('%c【Trial Fault!! center:'+result+'】',"color:red");
               console.log(ClipDT);
           } else {
               console.log("%c"+log,"color:green");
               if ((cour==1) || (isNaN(Average[N]))) Average[N] = turnN;
-              else                    Average[N] = Math.round((Average[N]*(cour-1)+turnN)/cour);
-              if (Face=="F") $("#Trial").html("Cours: "+ cour);
-              else           $("#Trial").html("Average: "+ Average[N]);
+              else         Average[N] = (Average[N]*(cour-1)+turnN)/cour;
+              $("#Trial").html("Cours: "+ cour);
+              $("#aveTurns").html("Average: "+  Math.ceil(Average[N]) + "moves");
               if (cnt>0) setTimeout('allTest();',cnt*100);
           }
           turnN = 1;
     }
 }
-
 async function clipIn() {
     return (await navigator.clipboard.readText()
     .then((text) => {

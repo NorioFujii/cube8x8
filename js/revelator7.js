@@ -1,7 +1,7 @@
 /*
 * ルービックキューブ2x2-8x8お告げナビゲーター・ロジックプログラム集
 *
-* Copyright (c) 2022-2024 Norio Fujii
+* Copyright (c) 2022-2025 Norio Fujii
 * Licensed under the MIT License
 *
 */
@@ -62,21 +62,21 @@ function edgeOK(color) {
           });
     return (hit.length);
 }
-function Xmove(ret,n,l) { //  くるくるムーブ
+function Xmove(ret,n,l) { //  四隅交換
     if ((Rotates.length>0)||(Counter>0)) {
         Tid = setTimeout("Xmove("+ret+","+n+","+l+")",NxPaus);
         return true;
     }
-    const Us = "*くるくるムーブ,*#300337,r,u,f,U,F,R";
+    const Us = "*対角交換パーム,*#300337,r,u,f,U,F,R";
     setRot(Us);
     setTimeout(ret+"("+n+")",100);
 }
-function Xperm(ret,n,l=4) { // くるくるパーム右
+function Xperm(ret,n,l=4) { // 二隅交換パーム右
     if ((Rotates.length>0)||(Counter>0)) {
         Tid = setTimeout("Xperm("+ret+","+n+","+l+")",NxPaus);
         return true;
     }
-    const Us = "*くるくるパーム,*#300337,r,u,R,u,r,U2,R";
+    const Us = "*二隅交換パーム,*#300337,r,u,R,u,r,U2,R";
     setRot(Us);
     setTimeout(ret+"("+n+")",100);
 }
@@ -99,186 +99,389 @@ function turnSftND(str) { // 回転記号をRotSft化で取り換えて、非表
         }
     }
     Counter = 0;
+    return str;
 }
+function DedgeCheck(color) {
+    var n=0,i;
+    for (i in [53,49,47,51])
+        if ((Nc([53,49,47,51][i])==color)&&(Nc([41,14,23,32][i])==Nc([44,17,26,35][i]))) n++;
+    return n;
+}
+let usw=0;
+var seq2;
 function WhiteX(m=0,color=White,ck=false) {  // 白クロスを形成する
     if ((Rotates.length>0)||(Counter>0)) {
         Tid = setTimeout("WhiteX("+m+","+color+")",NxPaus);
         return true;
     }
     if (m>=8) {
-        setTimeout("SolveNavi(8)",100);  // 9
+        if (opt.sayu.value=="L") { // 初期の配置型に揃える
+            turn("X2");
+            Rotates.push("*ゴール!!","*Fin");
+            setTimeout("SolveNavi(35)",1000);
+        } else setTimeout("SolveNavi(8)",100);  // 9
         return true;
     }
-    var n=m, l, Us2, Us = "*白色エッジを一旦上へ"+NoRot.replace(" ",",");
-    // 白エッジを４個とも上面に上向きに上げる
-    for (n=n;n<4;) {
-        l=4;while ((l-->0)&&!(Nc(8)!=color)) { uu(),Us += ",U"; } // 正面エッジが白の間飛ばす
-        if (l>0) { 
-            const cube=new Array(    11,15,31,47, 29,     26,       22,   24,     20,    51,     35,      33);
-            const move =         "L,F,l: F: f:F2:r,f:f,u,R,U:F,u,r,U,f:u,R,U:u,r,U,f:u,R2,U:u,R,U,f:u,R2,U,f".split(":");
-            var i = 0, f = 0, nn=-1;
-            for (i in cube) {
-                if (Nc(cube[i])==color)  {  // 監視範囲に白が居る
-                    turnSftND(move[i].trim());
-                    Us += ","+move[i].trim();
-                    f++; break;
-                }
-            }
-            if (f==0) { // 監視範囲になかったので、次の面へ
-                if (Us.slice(-2)==",U") { ui(); Us = Us.slice(0,-2); }
-                Us2 = "Y"; 
-                turnSftND(Us2); Us += ","+Us2;
-                n++;
-            } else {
-               if (f>cube.length) n = 4;
-            }
-        } else if (edgeCheck(color,2)==4) {
-               [Us2,n] = nextY( n, 4 );    // 終了
-               if (Us2!="") turnSftND(Us2),Us += Us2;
+    seq2 = String(N-1) + "連";
+    var n=0, l, i, j, Us2, usLen, Us = "*白色エッジを賢く下層へ"+NoRot.replace(" ",",");
+    const Uedge = [2,4,8,6], Sedge = [38,11,20,29,38,11,20,29],
+          Hedge = [[13,41],[15,22],[22,14],[24,31],[31,23],[33,40],[40,32],[42,13]],
+          Ccube = [[42,32],[22,14],[15,41],[31,23],[24,14],[40,32],[33,23],[13,41]];
+    const r180 = ["B","L","F","R","B","L","F","R"];
+    const Dedge = [[44,53],[17,49],[26,47],[35,51]];
+    for (i in Dedge) { var ocolor = Nc(Dedge[i][1]) ;
+        if ((Nc(Dedge[i][0])==color)&&(Math.abs(ocolor-Nc(Dedge[i][0]-3)==2))) {
+            // 下層で横白の底の色がセンターと反対色なら
+            // 青←→緑、赤←→橙の時だけ、D 一発
+            // const White=8,Orange=2,Green=3,Red=4,Blue=5,Yellow=6;
+            uu(),Us += ",D";
+            break;
         }
     }
-    // 白エッジを４個とも側面センターの色に合うよう横回転し、１８０°縦回転する
-    for (n=n;n<8;n++) {
-        l=4;while ((l-->0)&&!((Nc(8)==color)&&(Nc(20)==Nc(23)))) { uu(); Us += ",U"; }
-        if (l<0) { n--; continue; }
-        var face=",*白エッジを正規下層へ　&nbsp;<span style='color:"+['#FF8C00','#006400','#8B0000','#0000CD','#FFD700','#C0C0C0','#C0C0C0'][Nc(23)-2]+
-                 "; font-weight:300;'>"+"　　橙緑赤青黄白白".charAt(Nc(23))+"面</span>の下層";
-        var nxY = "F2"+((n<7)?",Y":"");
-        turnSftND(nxY);
-        Us += face+","+nxY;
+  dropW:
+    while (DedgeCheck(color)<4) {
+        Us2 = "";   // kiir();         debugger;
+
+        // 中間層の横２連を縦にする。(横２連の処理が縦２連を壊すことはないが、上向き白エッジはずらす。)
+        for (i in Hedge) {
+            if ((Nc(Hedge[i][0])==color)&&(Nc(Hedge[i][1])==Nc(Hedge[i][1]+1)))  // 横２連
+                Us2 = ((Nc([2,8,4,6,8,2,6,4][i])==color)?",u,":",") + ["B","f","L","r","F","b","R","l"][i]; // 
+            if (Us2!="") {if (Us2.slice(0,2)==",u") n++;
+                Us += ",*中段エッジの横"+seq2+"を　　下層へ,*#"+Hedge[i][0]+Hedge[i][1] + turnSftND(Us2);
+                continue dropW;
+            }
+        }
+        // 上向き白エッジを縦２連にして、180度縦回転する。center下が白のとき90度で横二連ができる方へ回転する。
+        // 　center横先が白のとき90度で横二連ができる方へ回転する。
+        for (i in Uedge) if (Nc(Uedge[i])==color) { j = Number(i); UsLen=Us.length; // iはプロパティから数値jへ変わる
+            l=4;while ((l-->0)&&((Nc(Sedge[j+(3-l)])!=Nc(Sedge[j+(3-l)]+3)))) { ui(),Us += ",u"; } // 上層エッジをセンターに合わせる
+            if (l>=0) {
+                j += (3-l);
+                Us2 = ","+ r180[j] + "2"; // 通常は、180度回転
+                if (Nc(Sedge[j]+6)==color) { // 
+                    if (Nc([53,49,47,51][j&3])==Nc(Sedge[j+1]+3)) {
+                        Us2 = ","+r180[j].toLowerCase()+","+r180[j+1].toLowerCase(); // 左へ90度+90度
+                        Us2 += Us2.slice(0,2); n += 2;
+                    } else if (Nc([53,49,47,51][j&3])==Nc(Sedge[(j+4-1)&3]+3)) {     // 右へ90度+90度
+                        Us2 = ","+r180[j]+","+r180[(j+4-1)&3]+","+r180[j];
+                    }
+                } else if (Nc([33,24,15,42][j&3])==color) { // 右90度＋"U"＋右90度
+                    Us2 = ","+r180[j]+",u,"+r180[j]; n += 2;
+                } else if (Nc([13,22,31,40][j&3])==color) { // 左90度＋"U"＋左90度
+                    Us2 = ","+r180[j].toLowerCase()+",u,"+r180[j].toLowerCase();
+                }
+                Us += ",*上層の縦"+seq2+"を回転,*#0"+Uedge[j&3]+Sedge[j] + turnSftND(Us2);
+                continue dropW;
+            }
+        }
+        // 上層横向き白エッジを隣面の中段に下して２連とし、下層へ縦回転し、元の面を戻す
+    roteW:
+        for (i in Sedge.slice(0,4))
+            if (Nc(Sedge[i])==color) {
+                if ((Nc([14,23,32,41][i])!=Nc(Uedge[i]))&&(Nc([32,41,14,23][i])!=Nc(Uedge[i]))) {
+                     ui(),Us += ",u";
+                     continue roteW;
+                } // 上層エッジを中段に合わせる
+                if (Nc([14,23,32,41][i])==Nc(Uedge[i]))      Us2 = "," + ["B,l,b","L,f,l","F,r,f","R,b,r"][i];
+                else if (Nc([32,41,14,23][i])==Nc(Uedge[i])) Us2 = "," + ["b,R,B","l,B,L","f,L,F","r,F,R"][i];
+                Us += ",*横向きのエッジを中段で連結し下層へ,*#"+[38,11,20,29][i] + turnSftND(Us2);
+                continue dropW;
+             }
+        // 底面で孤立している白エッジを下面または縦回転する。途中で横２連になるなら、90度ずつに回転とする。
+        for (i in Dedge) {
+            if ((Nc(Dedge[i][0])==color)&&(Nc(Dedge[i][0]-3)==(Nc(Dedge[i][1])))) {
+                Us2 = ",D," + ["L","F","R","B"][i] + ",d," + ["B","L","F","R"][i] ; 
+                Us += ",*下層の孤立白色エッジを下向きに,*#"+Dedge[i][0]+Dedge[i][1] + turnSftND(Us2);
+                continue dropW;
+            }
+            if (((Nc(Dedge[i][0])==color)||(Nc(Dedge[i][1])==color))&&
+                (Nc(Dedge[i][0])!=(Nc(Dedge[i][0]-3)))) { j = Number(i); UsLen=Us.length; // iはプロパティから数値jへ変わる
+                l=4;while ((l-->0)&&((Nc(Uedge[j&3])==color)||(Nc(Sedge[i])==color))) { ui(),Us += ",u"; } // 上層エッジが白の間飛ばす
+                if (l<0) break;
+                Us2 = "," + ["B","L","F","R"][i] + "2";   // 通常は、180度回転
+                if (Nc(Dedge[i][0])==color) { // 底面横向きが白なら
+                    if (Nc(Dedge[i][1])==Nc(Sedge[(j+1)&3]+3)) {
+                        Us2 = ","+r180[i].toLowerCase()+","+r180[j+1].toLowerCase(); // 左へ90度
+                    } else if (Nc(Dedge[i][1])==Nc(Sedge[(j+4-1)&3]+3)) {            // 右へ90度
+                        Us2 = ","+r180[i]+","+r180[(j+4-1)&3];
+                    }
+                } 
+                Us += ",*下層の孤立白色エッジを上層へ,*#"+Dedge[i][0]+Dedge[i][1] + turnSftND(Us2);
+                continue dropW;
+            }
+        }
+        // 中間層の孤立白エッジは上層に戻し、犠牲となった隣面を90度戻す。
+        for (i in Hedge) {
+            if (Nc(Hedge[i][0])==color) {
+                l=4;while ((l-->0)&&((Nc(Uedge[i&3])==color)||(Nc(Sedge[i])==color))) { ui(),Us += ",u"; } // 上層エッジが白の間飛ばす
+                if (l<0) break;
+                Us2 = "," + ["b","F","l","R","f","B","r","L"][i] + ((Nc(Ccube[i][0])==Nc(Ccube[i][1]))?",U,":",u,");
+                Us2 += String.fromCharCode(Us2.charCodeAt(1)^0x20);
+            }
+            if (Us2!="") {
+                Us += ",*中段の孤立エッジを　　　上層へ,*#"+Hedge[i][0]+Hedge[i][1] + turnSftND(Us2);
+                continue dropW;
+            }
+        }
     }
     if (ck) return Us;
-    console.log(Us," nextN=",n);
-    setRot(rewind(Us.replace(/U,U,U,/g,"u,").replace(/U,u,/g,"").replace(/U,U,/g,"U2,")));
-    setTimeout("WhiteX("+n+","+color+")",100);
+    Us = Us.replace(/u,u,u,/g,"U,").replace(/,u,u/g,",u2");
+    Us = Us.replace(/,u2,u/g,",U");
+       var arr = Us.split(',').filter(function(value, index, array) {
+           return (value.charAt(0)!="*");
+       });
+       n = arr.length;
+    console.log(Us," nextN=",n); // nextNは、Us内の*で始まらない要素数を表示すべし。
+    setRot(rewind(Us));
+    setTimeout("WhiteX("+8+","+color+")",100);
 }
 function ikinari_edge(m=0) { // 上層のエッジをF2Lで横に降ろす。
     if ((Rotates.length>0)||(Counter>0)) {
         Tid = setTimeout("ikinari_edge("+m+")",NxPaus);
         return true;
     }
-    var n=m&7, Us2 = "", Us="", dbl = "";
+    var n=m&7, Us2 = "", Us="", dbl = "", rl="";
     save5x5();  // 現状の盤面保存
-//    do {
-      if (n<4) { // 前エッジパーツは黄色を含まず、正面色と側面の色が合う面から始める
-        var l=4;
-        while ((l-->0)&&!((Nc(8)!=Yellow)&&(Nc(20)==Nc(23)))) { uu();  Us2 += ",U"; }
-        if (l>=0) { // 左右両検査のため、0を含む
-                var cc = Nc(8)*Nc(23)+Nc(8)+Nc(23);
-                var face="*「いきなりF2L」"+" 　　　<span style='color:"+['#FF8C00','#006400','#8B0000','#0000CD','#FFD700','#C0C0C0','#C0C0C0'][Nc(23)-2]+
-                         "; font-weight:300;'>"+"　　橙緑赤青黄白白".charAt(Nc(23))+"面</span>で";
-                if (Nc(14)==Nc(8)) Us = face+"左エッジ"+Us2+(WTchk(7,12,cc)?",u":"")+",*#082014,f,L,F,l",(WTchk(7,12,cc)?ui():void(0)),turnSftND("f,L,F,l");
-                else               Us = face+"右エッジ"+Us2+(WTchk(9,21,cc)?",U":"")+",*#082032,F,r,f,R",(WTchk(9,21,cc)?uu():void(0)),turnSftND("F,r,f,R"); // 
-                dbl = Us.slice(-18,-17);
-                if ((dbl=="U")||(dbl=="u")) Us += ((dbl=="U")?",u":",U"),((dbl=="U")?ui():uu());
-        } else if (edgeCheck(Yellow,2)==4) {
-                   [Us2,n] = nextY( n, 4 );    // 終了で残りY回転数を返す
-        } else { n++ ; Us = Us2.replace(/\,U/g,"")+",Y"; }  // 正面の切り替え 実回転をする  ４回続くようであれば一度で済ませたい
-        if (Us=="") Us = Us2;
+    if (Us=="") { // if (n<4) 全エッジパーツは黄色を含まず、正面色と側面の色が合う面から始める
+        Us = slotin();
+        if (Us=="") { 
+            var l = 4;
+            while ((l-->0)&&!((Nc(38)!=Yellow)&&(Nc(2)==Nc(23)))) { uu();  Us2 += ",U"; }
+            if (l>=0) { // 左右両検査のため、0を含む
+                if (n!=1) Us = slotin();
+                if (Us=="") {
+                    var face=",*お告げ・F2L準備"+" 　　　　<span style='color:"+['#FF8C00','#006400','#8B0000','#0000CD','#FFD700','#C0C0C0','#C0C0C0'][Nc(23)-2]+
+                             "; font-weight:300;'>"+"　　橙緑赤青黄白白".charAt(Nc(23))+"面</span>で";
+                    if (Nc(14)==Nc(38)) rl="L",Us = face+"左エッジ"+Us2+WTchkL() ;
+                    else                rl="R",Us = face+"右エッジ"+Us2+WTchkR() ;
+                } else Us = Us2 + Us;
+            } else if (edgeCheck(Yellow,2)==4) {
+                       [Us2,n] = nextY( n, 4 );    // 終了で残りY回転数を返す
+            } else { n++ ;
+                     Us = Us2.replace(/\,U/g,"")+",Y";
+                     if ((Nc(1)==White)&&((turnN-turnN3)>120)) 
+                         if      ((Nc(10)*Nc(39)+Nc(10)+Nc(39))==(Nc(23)*Nc(32)+Nc(23)+Nc(32))) Us += ",U";
+                         else if ((Nc(10)*Nc(39)+Nc(10)+Nc(39))==(Nc(23)*Nc(14)+Nc(23)+Nc(14))) Us += ",U";
+            }  // 正面の切り替え 実回転をする  ４回続くようであれば一度で済ませたい
+            if (Us=="") Us = Us2;
+        }
         console.log(Us);
-        if ((dbl!="U")&&(dbl!="u")) {
+        if ((Us!="")&&(edgeCheck(Yellow)<4)) {
             Pause = true;
             rest5x5();     // 盤面復活
             setRot(Us.replace(/U,U,U,/g,"u,").replace(/U,U,/g,"U2,").split(",")); 
             Pause = false;
-            setTimeout("ikinari_edge("+n+")",100);
+            if ((rl!="")||(dbl=="slot"))
+                             setTimeout("it_slotin('"+rl+"')",100);
+            else             setTimeout("ikinari_edge("+1+")",100);
             return true;
         }
-      }
-//     }   while ((n<4)&&((hcorCheck(White)>=0)&&(beltCheck(Yellow,1)==1)||
-//           (hcorCheck(White)<0)&&(beltCheck(Yellow,1)>0)));
+    }
     Pause = true;
     rest5x5();     // 盤面復活
-    setRot(("*お告げが続く,"+Us).split(","));
+    if ((++usw&1)==0) Us += ",u";
+        console.log(Us);
+    setRot(("*お告げが続く"+Us).split(","));
     Pause = false;
     setTimeout("otuge_corner()",100);
 }
-function WTchk(f1,f2,cc) { // コーナー白で色組が同じ
-    var f3 = f2 + 7,c1=Nc(f1),c2=Nc(f2),c3=Nc(f3);
-    return ((c1==White)&&((c2*c3+c2+c3)==cc) ||
-            (c2==White)&&((c1*c3+c1+c3)==cc)&&(Nc(8)!=c1) ||
-            (c3==White)&&((c1*c2+c1+c2)==cc)&&(Nc(8)!=c1) ) ;
+function it_slotin(rl) { 
+    if ((Rotates.length>0)||(Counter>0)) {
+        Tid = setTimeout("it_slotin('"+rl+"')",NxPaus);
+        return true;
+    }
+  　const sideL = Array.of(1,10,39,3,37,30,9,28,21,7,19,12); // top,White,l/r
+  　const sideR = Array.of(3,30,37,1,39,10,7,12,19,9,21,28);
+    var color = (rl=="L")?Nc(14):Nc(32);
+    var Us = "*ITスロットイン,";
+    for (var i=0;i<4;i++) {
+        if (rl=="L") {
+            if ((Nc(sideL[i*3])==Nc(23))&&(Nc(sideL[i*3+1])==White)&&(Nc(sideL[i*3+2])==color)) break;
+            if ((Nc(sideL[i*3])==White)&&(Nc(sideL[i*3+1])==Nc(23))&&(Nc(sideL[i*3+2])==color)) break;
+        }
+        if (rl=="R") {
+            if ((Nc(sideR[i*3])==Nc(23))&&(Nc(sideR[i*3+1])==White)&&(Nc(sideR[i*3+2])==color)) break;
+            if ((Nc(sideR[i*3])==White)&&(Nc(sideR[i*3+1])==Nc(23))&&(Nc(sideR[i*3+2])==color)) break;
+        }
+    }
+    if (i<4) {
+        const it_rotR = Array.of ("","U,","U2,","u,");
+        const it_rotL = Array.of ("","u,","u2,","U,");
+
+        if (rl=="R") {
+            Us += it_rotR[i] ;
+            if (Nc(sideR[i*3])!=White) Us += "R,u,r,U2,R,u,r";
+        } else if (rl=="L") {
+            Us += it_rotL[i] ;
+            if (Nc(sideL[i*3])!=White) Us += "l,U,L,u2,l,U,L";
+        }
+        console.log(Us);
+        $("#proc16").prop('disabled',false);
+        setRot(Us.split(","));
+    }
+    setTimeout("ikinari_edge()",100);
 }
-function BoCW(f1,f2) { // 下面のみ白含み、上面白なし
-    return (Nc(f1)!=White) && (Nc(f2)!=White) &&
-           ((Nc(f1+6)==White)||(Nc(f2+6)==White)) ;
+function WTchkR() { // 右エッジ移動時に、事前に左側の前後を上げられるか検査。
+//                              ITにならないときは、白が沈むのを避けるか検査
+    var c1=Nc(9),c2=Nc(21),c3=Nc(28), Us=",*#023832",
+        target=White*Nc(23)*Nc(32)+White+Nc(23)+Nc(32);
+
+    if      ((Nc(16)*Nc(45)*Nc(52)+Nc(16)+Nc(45)+Nc(52))==target) Us += ",R,L,U,r,u,l";
+    else if ((Nc(25)*Nc(18)*Nc(46)+Nc(25)+Nc(18)+Nc(46))==target) Us += ",R,l,U,r,u,L";
+    if (Us.length==9) {
+        Us += ",R,U,r";if (opt.sayu.value=="L") return Us;
+        original = (Nc(2)*Nc(38)+Nc(2)+Nc(38)) ;
+        if (((c1==White)||(c3==White))&&
+            (((turnN-turnN3)>100) ||
+             (c1==White)&&((c2*c3+c2+c3)==original) ||
+             (c3==White)&&((c2*c1+c2+c1)!=original)))  Us = ",F" + Us + "2,u,f,R"; 
+    }
+    return Us;
+}
+function WTchkL() { // 左エッジ移動時に、事前に右側の前後を上げられるか検査。
+//                              ITにならないときは、白が沈むのを避けるか検査
+    var c1=Nc(7),c2=Nc(19),c3=Nc(12), Us=",*#023814",
+        target=White*Nc(23)*Nc(14)+White+Nc(23)+Nc(14);
+
+    if      ((Nc(36)*Nc(43)*Nc(54)+Nc(36)+Nc(43)+Nc(54))==target) Us += ",l,r,u,L,U,R";
+    else if ((Nc(27)*Nc(34)*Nc(48)+Nc(27)+Nc(34)+Nc(48))==target) Us += ",l,R,u,L,U,r";
+    if (Us.length==9) {
+        Us += ",l,u,L";if (opt.sayu.value=="L") return Us;
+        original = (Nc(2)*Nc(38)+Nc(2)+Nc(38)) ;
+        if (((c1==White)||(c3==White))&&
+            (((turnN-turnN3)>100) ||
+             (c1==White)&&((c2*c3+c2+c3)==original) ||
+             (c3==White)&&((c2*c1+c2+c1)!=original)))  Us = ",f" + Us + "2,U,F,l";
+    }
+    return Us;
+}
+function WTchk(n,f1,f2,f3) { // コーナー白を含むか
+    var c1=Nc(f1),c2=Nc(f2),c3=Nc(f3); // c12=Nc(f1*4/(f1-6));
+
+    return (((c1==White)||(c3==White))&&(((turnN-turnN3)>100) ||
+            (c1==White)&&((c2*c3+c2+c3)==(Nc(2)*Nc(38)+Nc(2)+Nc(38))))) ||
+            (c3==White)&&((c2*c1+c2+c1)!=(Nc(2)*Nc(38)+Nc(2)+Nc(38))) ;
+}
+function BoCW(f1,f2) { // 上層コーナーに白含み
+    return (Nc(f1)==White) || (Nc(f2)==White) ; //  || (Nc(f2+2)==White) ;
+
+}
+function slotin(n=-1) {
+    const rote2R = Array.of("r,F,R,f","f,L,F,l","l,B,L,b","b,R,B,r") ;
+    const rote2L = Array.of("L,f,l,F","B,l,b,L","R,b,r,B","F,r,f,R") ;
+    var Us = "", l;
+//  debugger;   // Nc(2)がNc(23)と同じ色になるまで、Y,u を実施すべし。
+    function itpairH() {
+        var Us = "", n;
+        if ((Nc(30)==White)&&(Nc(3)==Nc(2))&&(Nc(37)==Nc(38))) {
+            $("#proc16").prop('disabled',false);
+            for (n=0;n<4;n++) if (Nc(2)==Nc([23,14,41,32][n]))  break; 
+            Us += ",*横"+seq2+"発見,*#300203," + "U,U,U,U,".slice(-2*n-2) + rote2R[n] ;
+        } else if ((Nc(10)==White)&&(Nc(1)==Nc(2))&&(Nc(39)==Nc(38))) {
+            $("#proc16").prop('disabled',false);
+            for (n=0;n<4;n++) if (Nc(2)==Nc([23,14,41,32][n]))  break; 
+            Us += ",*横"+seq2+"発見,*#100102," + "U,U,U,u,".slice(-2*n-2) + rote2L[n] ;
+        }
+        return Us.replace(/U,u,/g,"").replace(/U,U,/g,"U2,").replace(/U2,U,/g,"u,");
+    }
+    Us = itpairH(); if (Us!="") return Us;
+    if (Nc(9)==White) {
+          if ((Nc(21)==Nc(24))&&(Nc(31)==Nc(28))) Us += ",*ねじりセクシーで"+seq2+"準備,*#0921282431,f,U2,F";
+          else if ((Nc(21)==Nc(31))&&(Nc(24)==Nc(28))) {
+              $("#proc16").prop('disabled',false);
+              Us += ",*セクシームーブ３回で　右スロットイン,*#0921282431,R,U,r,u,R,U,r,u,R,U"+((Nc(31)==Nc(32))?",r":",U2,r");
+         } else if ((Nc(21)*Nc(28)+Nc(21)+Nc(28))==(Nc(33)*Nc(40)+Nc(33)+Nc(40))) { Us += ",u,Y"; }
+      }
+    if (Us!="") return Us.replace(/U,U2,/g,"u,").replace(/U,U,/g,"U2,");
+    l=4; while ((l-->0)&&!(((Nc(10)==White)&&(Nc(1)==Nc(23)))||((Nc(30)==White)&&(Nc(3)==Nc(23))))) { uu();  Us += ",U"; }
+    if (l>=0) {
+        var us = itpairH(); if (us!="") { while (++l<4) ui(); return Us+us; }
+        var face=",*お告げ・四隅　<span style='color:"+['#FF8C00','#006400','#8B0000','#0000CD','#FFD700','#C0C0C0','#C0C0C0'][Nc(23)-2]+
+             "; font-weight:300;'>"+"　　橙緑赤青黄白白".charAt(Nc(23))+"面</span>から";
+        if ((Nc(30)==White)&&(Nc(37)==Nc(32)))
+               if ((Nc(32)==Nc(24))&&(Nc(31)==Nc(23))) Us += face+"右ITイン,*#300337,R,U,r2,u,f,U,f2,R,f"; // IT-IN
+               else Us += face+"右スロットイン,*#300337,R,u,r,U,r,F,R," + (BoCW(25,18)?"u,":"") + "f"; // 沈み判定
+        if ((Us=="")&&(Nc(10)==White)&&(Nc(14)==Nc(39)))
+               if ((Nc(39)==Nc(22))&&(Nc(15)==Nc(23))) Us += face+"左ITイン,*#100139,l,u,L2,U,F,u,f2,l,F"; // IT-IN
+               else Us += face+"左スロットイン,*#100139,l,U,L,u,L,f,l," + (BoCW(27,34)?"U,":"") + "F"; // 沈み判定
+    } else Us = "";
+    if (n>-1) while (++l<4) ui();
+    return Us.replace(/U,u,/g,"").replace(/U,U,/g,"U2,");
 }
 function otuge_corner(n=0) { // 下段４コーナーをコーナーお告げに基づき完成する
     if ((Rotates.length>0)||(Counter>0)) {
         Tid = setTimeout("otuge_corner("+n+")",NxPaus);
         return true;
     }
-    var Us = "*お告げ・F2L下層移動"+NoRot.replace(" ",","), Us2, l = 4;
+    var Us = "", Us2, l = 4;
+    if (cornerOK(White)==8) {
+        Us = "*中下段の完了！"+",Y,Y,Y,Y".slice(0,(8-n)*2);
+        if ((n&1)==1) console.log('Parityが発生した可能性あり');
+        console.log(Us);
+        setRot(Us.split(","));
+        setTimeout("SolveNavi(18)",100);
+        return true;
+    }
     if (n<4) {
-      // 　２層４面のエッジベルトに黄色を含んでいたら、上面エッジを降ろし合わせる
-      if ((hcorCheck(White)>=0)&&(beltCheck(Yellow,1)==1)||
-           (hcorCheck(White)<0)&&(beltCheck(Yellow,1)>0)) {
-          var rot = ("*エッジ降ろし発生"+",Y,Y,Y,Y".slice(0,(n%4)*2));
-          console.log(rot);
-          setRot(rot.split(","));
-          setTimeout("ikinari_edge(11)",80);  // 修復モード　８＋３(n)
-          return true;
+      if (Us=="") {
+          // 　２層４面のエッジベルトに黄色を含んでいたら、上面エッジを降ろし合わせる
+          if ((hcorCheck(White)>=0)&&(beltCheck(Yellow,1)==1)||
+               (hcorCheck(White)<0)&&(beltCheck(Yellow,1)>0)) {
+              var rot = ("*エッジ降ろし発生"+",Y,Y,Y,Y".slice(0,(n%4)*2));
+              console.log(rot);
+              setRot(rot.split(","));
+              setTimeout("ikinari_edge(11)",80);  // 修復モード　８＋３(n)
+              return true;
+          }
       }
       if (hcorCheck(White)<0) { [Us2,n] = nextY( n, 4 ); Us += Us2; }
-      else { // 奥左右コーナーの白横か？その時正面色が合うまで横回転
-          Us = ""; l=4;
-          while ((l-->0)&&!(((Nc(10)==White)&&(Nc(1)==Nc(23)))||((Nc(30)==White)&&(Nc(3)==Nc(23))))) { uu();  Us += ",U"; }
-          var face=",*お告げ・四隅　<span style='color:"+['#FF8C00','#006400','#8B0000','#0000CD','#FFD700','#C0C0C0','#C0C0C0'][Nc(23)-2]+
-                   "; font-weight:300;'>"+"　　橙緑赤青黄白白".charAt(Nc(23))+"面</span>から";
-          if (l>=0)
-              if (Nc(10)==White) 
-                 if ((Nc(1)==Nc(2))&&(Nc(39)==Nc(38))) Us += ",U,U,*横2連発見,*#092128,l,U,L";
-                 else if (Nc(15)==Nc(23)) Us += ",*#100139,l,u,L2,U,F,u,f2,l,F"; // 縦２連
-                 else Us += face+"左スロットイン,*#100139,l,U,L,u,L,f," +
-                            (BoCW(10,39)?"U,l,":"l,") + (BoCW(21,28)?"U,F":"F"); // 沈み判定
-              else if ((Nc(3)==Nc(2))&&(Nc(37)==Nc(38))) Us += ",U,U,*横2連発見,*#071219,R,u,r";
-                 else if (Nc(31)==Nc(23)) Us += ",*#300337,R,U,r2,u,f,U,F2,R,f"; // 縦２連
-                 else Us += face+"右スロットイン,*#300337,R,u,r,U,r,F," +
-                            (BoCW(30,37)?"u,R,":"R,") + (BoCW(12,19)?"u,f":"f"); // 沈み判定
-          else { n++; Us = Us.replace(/\,U/g,"")+",Y"; } // 正面の切り替え 実回転をする  ４回続くようであれば一度で済ませたい
-          while (++l<4) ui();
+      else if (Us=="") { // 奥左右コーナーの白横か？その時正面色が合うまで横回転
+          Us = slotin(n);
+          if (Us=="") n++;
       }
-      console.log(Us);
-      setRot(Us.replace(/U,U,U,/g,"u,").replace(/U,U,/g,"U2,").split(",")); // 
-      setTimeout("otuge_corner("+n+")",100);
-      return true;
+      if ((Us!="")&&(Us!=",Y")) {
+          console.log(Us);
+          setRot(Us.replace(/U,U,U,/g,"u,").replace(/U,U,/g,"U2,").split(",")); // 
+          if (Us.indexOf(seq2)>0) setTimeout("otuge_corner()",100);
+          else                     setTimeout("ikinari_edge(11)",100);
+          return true;
+      }
     }
     // 　白上向きコーナーポストが目的スロット位置に来るように黄色面を横回転する
     // 　目的スロットを仮想の正面右として、R U R'U'R U R'U'R U R'と回転させる
     if (n<8) { // 上層コーナー（白上向き）を最下層に降ろす
-        if (cornerOK(White)==8) {
-            Us = "*F2L完"+",Y,Y,Y,Y".slice(0,(8-n)*2);
-            if ((n&1)==1) console.log('Parityが発生した可能性あり');
-            console.log(Us);
-            setRot(Us.split(","));
-            setTimeout("SolveNavi(18)",100);
-            return true;
-        }
-        Us = "*白跳ね上げ"+NoRot.replace(" ",",");
+        l = 4; Us = "*白跳ね上げ"+NoRot.replace(" ",",");
         if (Nc(9)==White) {
-            Us = "*お告げ・コーナー白上"; l = 4;
-            var a21 = Nc(21), a28 = Nc(28);
+            Us = "*お告げ・コーナー白上"; 
             while ((l-->0)&&!((Nc(21)==Nc(24))&&(Nc(31)==Nc(28)))) { ui(),fd(); Us += ",u,Y"; }
-            if (l>=0) Us += ",*ねじりセクシーで右スロットイン,*#0921282431,f,U,F,R,U2,r";
+            if (l>=0) Us +=  ",*ねじりセクシーで"+seq2+"準備,*#0921282431,f,U2,F";
             else {
                 l = 4; Us = Us.replace(/\,u\,Y/g,""); 
                 while ((l-->0)&&!((Nc(21)==Nc(31))&&(Nc(24)==Nc(28)))) { ui(),fd(); Us += ",u,Y"; }
                 if (l>=0) {
-                      Us += ",*セクシームーブ３回で　右スロットイン,*#0921282431,R,U,r,u,R,U,r,u,R,U,r";
+                    Us += ",*セクシームーブ３回で　右スロットイン,*#0921282431,R,U,r,u,R,U,r,u,R,U"+((Nc(31)==Nc(32))?",r":",U2,r");
                 } else {
                     console.log('白上の土台のベルト位置が見つからない');
                     ikinari_edge(8);
                     return true;
                 }
             }
-        } else if (Nc(27)==White) Us += ",f,U,F,u";
-          else if (Nc(34)==White) Us += ",R,u,r";
-          else if ((Nc(48)==White)&&((Nc(27)!=Nc(23))|| (Nc(27)!=Nc(24)))) Us += ",f,U,F";
-          else { n++; Us = "Y"; }
+        } else  {
+            if (Nc(27)==White) Us += ",f,U,F,u";
+            else if (Nc(34)==White) Us += ",R,u,r,u,Y";
+            else if ((Nc(48)==White)&&((Nc(27)!=Nc(23))|| (Nc(27)!=Nc(24)))) Us += ",f,U,F";
+            else if ((hcorCheck(White)<2)&&(Nc(19)==White)) Us += ",U";
+            else { n++; Us = ",Y"; }
+        }
         while (++l<4) { Fd(),uu(); Us+=",y"; } 
         if (Us.toUpperCase().indexOf("U")>=0) {
             if (n%4>0) Us = (Us+",y,y,y,y".slice(0,(n%4)*2)).replace(",y,y,y",",Y");
+            $("#proc16").prop('disabled',false);
             n = 0;
+        }
+        if ((Us==",Y")||(Us==",y")) {
+            n = 0;
+            if ((++usw&3)==0) Us = ",u"; 
         }
         console.log(Us);
         setRot(Us.split(","));
@@ -286,8 +489,8 @@ function otuge_corner(n=0) { // 下段４コーナーをコーナーお告げに
         return true;
     }
     if (n%4>0) Us = (Us+",y,y,y,y".slice(0,(n%4)*2)).replace(",y,y,y",",Y");
-    if (hcorCheck(White)>=0) {
-        setRot(("*お告げが続く,"+Us).split(","));
+    if ((hcorCheck(White)>=0)||(cornerOK(White)<8)) {
+        setRot(("*お告げが続く"+Us).split(","));
         setTimeout("otuge_corner()",100);
         return true;
     }
@@ -297,11 +500,11 @@ function otuge_corner(n=0) { // 下段４コーナーをコーナーお告げに
 }
 let yon=false;  // 4x4,6x6スイッチ
 const RS="*二隅隣接交換,*#300337092128,L,r,u,R,U,l,u,r,U,R";
-const TK="*二隅対角交換,*#300337071219,r,u,f,U,F,R,U";
+const TK="*対角交換（交換パーム）,*#300337071219,r,u,f,U,F,R,U";
 function ex2corner(n=0) { // 隣接交換、対角交換でコーナーの色を合わせる
 // White=8,Orange=2,Green=3,Red=4,Blue=5,Yellow=6
 // 上面コーナーが隣接１組一致(隣接検査表内)なら、隣接交換
-// 対角１組一致（隣接検査表外）なら対角交換、
+// 対角１組一致（隣接検査表外）なら対角交換、ただし、２時45分なら、零針扱いで魚へ
 // それぞれ２組一致なら、何もしない
     if ((Rotates.length>0)||(Counter>0)) {
         Tid = setTimeout("ex2corner("+n+")",NxPaus);
@@ -364,7 +567,7 @@ function ex2corner(n=0) { // 隣接交換、対角交換でコーナーの色を
         } else console.log('Target [',i,']が無い');
     }
     else {  // 交換ゼロか2個以上交換可能
-        Us = "*対角かも"+(8-multiNab.size); // 隣接対象外
+        Us = "*交換パームかも"+(8-multiNab.size); // 隣接対象外
         while ((l>0)&&!(Nc(1)*Nc(10)*Nc(39)==36)) { l--; uu(); Us += ",U"; }
         if (l>0) {                         //        36
             nablen7 = Nc(7)*Nc(12)*Nc(19); // 目標： 60  72
@@ -375,8 +578,8 @@ function ex2corner(n=0) { // 隣接交換、対角交換でコーナーの色を
                     n = 22; // 再度時計読み必要
                     var y="", m=0;
                     for (m=0; m<4; m++) y += (Nc([2,4,6,8][m])==Yellow)? "1":"0" ;
-                    if      (y=="1001") Us += ",U,*お告げ・四隅交換で魚へ,F,R,U,r,u,f",n=24;
-                    else if (y=="0110") Us += ",*お告げ・四隅交換で魚へ,F,R,U,r,u,f",n=24;
+                    if      (y=="1001") Us += ",U,*お告げ・対角交換で魚へ,F,R,U,r,u,f",n=24;
+                    else if (y=="0110") Us += ",*お告げ・対角交換で魚へ,F,R,U,r,u,f",n=24;
                     else                Us += "," + TK; 
                 }
                 // 上面対角1_9と1_3okなら全一致なので、面を合わせた位置で戻る
@@ -392,20 +595,23 @@ function ex2corner(n=0) { // 隣接交換、対角交換でコーナーの色を
 
 function clk2move(n=0) {  
 // 時計読み２連続ムーブ：点ならFRUR'U'F'、それ以外直線と３時ムーブ、
-// それで２連目に時計読み６時ムーブ
+// それで２連目に時計読み3+3時ムーブ
     if ((Rotates.length>0)||(Counter>0)) {
         Tid = setTimeout("clk2move("+n+")",NxPaus);
         return true;
     }
-    var l = 4, Us = "*時のお告げから下準備"+NoRot.replace(" ",",");
+    var l = 4, Us = "*時計読みお告げから下準備"+NoRot.replace(" ",",");
     while ((l-->0)&&!(Nc(2)==Yellow)) { uu(); Us += ",U"; }
     if (l>=0) {
         if (n%2==0) {
             if ((Nc(4)==Yellow)||(Nc(8)==Yellow)) Us += ",U";
         } else if (Nc(6)==Yellow) Us += ",u";
-    } else Us = "*時のお告げ・６時へ,F,R,U,r,u,f";
+    } else Us = "*お告げ・時刻パーム3+3へ,F,R,U,r,u,f";
     while (++l<4) ui();
-    if (Us.indexOf('６時へ')<0) Us += ((n%2==0)?",*時のお告げ・３時ムーブ":",*お告げ・６時ムーブで　魚準備")+",*#3003370629,r,u,f,U,F,R";
+    if (Us.slice(-1)!="f") Us += ((n%2==0)?
+                              ",*お告げ・時刻パーム３":
+                              ",*お告げ・時刻パーム3+3で　魚準備")+
+                              ",*#3003370629,r,u,f,U,F,R";
     console.log(Us);
     setRot(Us.replace("U,u,","").replace("U,U,U,","u,").replace("U,U,","U2,").split(",")); // 
     if (n%2==0) {
@@ -435,7 +641,7 @@ function getFish(n=0) { // 上面に魚型のクロスを作る
         uu(); Us += ",U";
         while ((l-->0)&&!((Nc(10)==Yellow)&&(Nc(30)==Yellow))) { uu(); Us += ",U"; }
         if (l>=0) {
-            Us = Us.replace(",U,U,U",",u")+",*十字肩からパームで魚型へ変形,*#300337,r,u,R,u,r,U2,R";
+            Us = Us.replace(",U,U,U",",u")+",*肩から黄十字パームで　魚型へ変形,*#300337,r,u,R,u,r,U2,R";
             if ((N%2==0)&&(Nc(11)==Nc(14))&&(Nc(20)!=Nc(23))) Us += ",U,x,"+PA+",X"; // パリティ対応
             if ((N%2==0)&&(Nc(11)!=Nc(14))&&(Nc(20)==Nc(23))) Us += ",x,"+PA+",X"; // パリティ対応
             if (Us.indexOf("*パリティ補正")>=0) {
@@ -448,12 +654,12 @@ function getFish(n=0) { // 上面に魚型のクロスを作る
     } else if (corCnt==1) { // 魚形ができあがった?
            if (edgeCheck(Yellow,2)==4) // 魚形ができあがった
                 setTimeout("SolveNavi("+n+")",100);
-           else setTimeout("SolveNavi(22)",100); // 再度、時のお告げ
+           else setTimeout("SolveNavi(22)",100); // 再度、時計読みお告げ
            return true;
     } else if (corCnt==2) { // 蝶か亀形
         // 亀は（隣接黄色）、蝶は（対角黄色）で判断
         // 蝶(39と34)そして亀手前（37と39)なら、肩からパーム、
-        // 亀手開きだけ(10と30だけ黄色)腰からパーム
+        // 亀手開きだけ(10と30だけ黄色)上げ足からパーム
         while ((l-->0)&&!((Nc(7)==Yellow)&&(Nc(9)==Yellow))) { uu(); Us += ",U"; }
         if (l<0) { // 隣接黄色は無しなので、蝶型（対角黄色）の判定
             l=4;Us = "*"+NoRot.replace(" ",",");
@@ -461,11 +667,11 @@ function getFish(n=0) { // 上面に魚型のクロスを作る
             if (l<0) console.log('上面２個の黄色が見つからない');
         } else { // 隣接黄色なので亀形
             if ((Nc(10)==Yellow)&&(Nc(30)==Yellow)) // 手が横開きなら
-                Us += ",*亀腰からパームで魚型へ変形,*#092128,u,r,u,R,u,r,U2,R";
+                Us += ",*上げ足から黄十字パームで　魚型へ変形,*#092128,u,r,u,R,u,r,U2,R";
         }
         while (++l<4) ui();
-        if ((Us.indexOf(",*亀")<0)&&(Us.indexOf(",*十")<0))
-             Us += ",*肩からパームで魚型へ変形,*#300337,r,u,R,u,r,U2,R";
+        if (Us.indexOf("から黄十字")<0)
+             Us += ",*肩から黄十字パームで　魚型へ変形,*#300337,r,u,R,u,r,U2,R";
         if (n%2==1) n--;
     } else if (corCnt>3) { // 全面黄色のケース
         while (++l<4) ui();
@@ -611,6 +817,7 @@ function parityAlt(n) {  // 4x4の時自動的に実行される
 //  3x3扱いで、お告げ型手順を逐次実行する
 //  2x2扱いへのオプションも、ここからお告げ型手順をへ進む
 //
+let turnN3 = 0;  // turn No at 3x3 mode start
 function SolveNavi(s=0) {
     var n = s;
     if ((Rotates.length>0)||(Counter>0)) {
@@ -621,6 +828,7 @@ function SolveNavi(s=0) {
     if (n>34) {
         return;  //  終了
     }
+    if (n==0) turnN3 = turnN;
     var stp = parseInt(document.getElementById('stop').value);
     if (stp>0){
         if (n<stp) {
@@ -656,9 +864,10 @@ function SolveNavi(s=0) {
     var l = 4, y = 4, Us = "*「いきなりF2L」|エッジベルトが黄色を４個含むまで"+NoRot.replace(" ",",");
 // ２層４面の黄ばみのないエッジベルトのため、センター色に合わせて上面エッジから降ろす
     
-    if ((n<16)&&(edgeCheck(Yellow,2)==0)) {
-        $("#proc16").prop('disabled',false);
-        ikinari_edge(0);
+    if ((n<16)&&(edgeCheck(Yellow,2)<4)) {
+        $("#proc04").prop('disabled',false);
+        if ((Nc(37)==White)||(Nc(21)==White)) Rotates.push("u");
+        setTimeout('ikinari_edge()',100);
         return true;
     }        
 // 以下を下段４コーナー分繰り返すと、F2L終了状態となる
@@ -674,7 +883,7 @@ function SolveNavi(s=0) {
         return true;
     }
     if (n<24) {
-// 時計読み２連続ムーブ、点ならFRUR'U'F'と時計読み6時ムーブ
+// 時刻読み２連続ムーブ、点ならFRUR'U'F'と時刻読み3+3時ムーブ
         $("#proc20").prop('disabled',false);
         if ((vcorCheck(Yellow,true)==4)&&(edgeCheck(Yellow,2)==4)) {
             setTimeout("SolveNavi(31)",100); // 黄色面達成済み
@@ -689,9 +898,9 @@ function SolveNavi(s=0) {
         getFish(26);
         return true;
     }
-// 黄ばみの無い面の対面からXパームを実施して黄色一面にする
+// 黄ばみの無い面の対面から黄十字パームを実施して黄色一面にする
     var vcor = vcorCheck(Yellow,true),i=0;
-    Us = "*魚・くるくるパーム|黄色一面へ"+NoRot.replace(" ",","); l=4;
+    Us = "*魚・黄十字パーム|黄色一面へ"+NoRot.replace(" ",","); l=4;
     if (n<28) {
        if (vcor<4) {
           $("#proc26").prop('disabled',false);
@@ -902,7 +1111,7 @@ function yellow2x2(n) {
         } else console.log('Target [',j,']が無い');
     }
     else {  // 交換ゼロか2個以上交換可能
-        Us = "*対角かも "+(8-multiNab.size); // 隣接対象外
+        Us = "*時刻パーム3+3 "+(8-multiNab.size); // 隣接対象外
         while ((l>0)&&!(Nc(21)*Nc(8)*Nc(11)==60)){
             l--; Dw(); Us += ",D"; } // 本来パーツを21番へ
         if (l>0) {                         //        60

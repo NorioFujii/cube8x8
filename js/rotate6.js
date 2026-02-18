@@ -12,7 +12,7 @@ function dumpRot() {
 }
 function copyRot() {
     var copystr = ((!Solution)||(Solution==""))? ClipDT:Solution;
-    navigator.clipboard.writeText("*0c"+N+" "+copystr);   
+    navigator.clipboard.writeText(copystr);   
 }
 async function RotCopyX(obj,rot,rot2="",sayu="R"){
     var rotx=rot,rot2x=rot2, element=obj.getAttribute('aria-label');
@@ -219,8 +219,8 @@ function kiir(n=N,so=false){
         r+=unfold(10,"",3).charAt(0)!="f"?creFaces(10,-15,-45,-30,"Y(-90deg)"):creFaces(510,-75,-42, -30,"Y(-90deg)");
         r+=                               creFaces(19,  0,-45, 45,"X(0deg)");
         r+=unfold(28,"",3).charAt(0)!="f"?creFaces(28, 75,-45, 30,"Y(-90deg)"):creFaces(528,185,-42,  30,"Y(-90deg)");
-        r+=unfold(37,"",3).charAt(0)!="f"?creFaces(37, 60,-45,-45,"X(0deg)"):  creFaces(537,110,-38,-185,"X(0deg)");
-        r+=unfold(46,"",3).charAt(0)!="f"?creFaces(46,  0, 30, 30,"X(-90deg)"):creFaces(546,  0, 70,  30,"X(-90deg)");
+        r+=unfold(37,"",3).charAt(0)!="f"?creFaces(37, 60,-45,-45,"X(0deg)"):  creFaces(537,110,-48,-110,"X(0deg)");
+        r+=unfold(46,"",3).charAt(0)!="f"?creFaces(46,  0, 30, 30,"X(-90deg)"):creFaces(546,  0, 70,  60,"X(-90deg)");
     } else if ((n==2)||(n==4)) { // 2x2 on cubes:96  charAt(0) is "f" or numeric
         r =                               creFaces( 1,  3,-59,-39,"X(-90deg)",4);
         r+=unfold(17,"",4).charAt(0)!="f"?creFaces(17,-10,-46,-39,"Y(-90deg)",4):creFaces(517,-91,-13, -52,"Y(-90deg)",4);
@@ -513,7 +513,7 @@ function checkRot() {
             setRot(rot);
         }
     }
-    else if ((window.name=="cube3d") || (parent.swin==null) || (parent.swin.closed)) {
+    else if (false) { // ((window.name=="cube3d") || (parent.swin==null) || (parent.swin.closed)) {
         if (opener && opener.Rotates && (opener.Rotates.length>0)) {
             rot = regRot(opener.Rotates.trim().split(" "));
             opener.Rotates = "";
@@ -615,7 +615,7 @@ function dispRote(rot) {
     var rotExp = (rote.charCodeAt(0) & 0x20)>0?String.fromCharCode(rote.charCodeAt(0) ^ 0x20)+
                  (rote.charAt(1)=="2"?"'2":rote.charAt(1)+"'"+rote.slice(2)):rote;
     $("#rotate").html($("#rotate").html()+" "+rotExp);
-    if ($("#rotate").html().length>32) $(".lowerRot").css("font-size","11px");
+    if ($("#rotate").html().length>80) $(".lowerRot").css("font-size","11px");
     if (Tlog==1) Solution += " "+rotExp;
     return rote;
 }
@@ -1167,17 +1167,17 @@ function scramble3(){
       10==rand&&bi(),11==rand&&(b2()),12==rand&&rr(),13==rand&&ri(),14==rand&&(r2()),15==rand&&ll(),16==rand&&li(),17==rand&&l2();
     symset(sym);
     $("#solve3").attr('disabled',false);
-    if (opener && opener.ClipDT && (opener.ClipDT!="")) opener.ClipDT = "";
+//    if (opener && opener.ClipDT && (opener.ClipDT!="")) opener.ClipDT = "";
 }
 function symset(sym) {
     turnN = 1;
     ClipDT = sym;
     kiirRotLayer(wholecube,99),kiir();
-    if (opener && (opener.document.getElementsByName('pythonQ').length>0)) {
-            parent.ClipDT = cmnt.slice(18);
-            opener.document.getElementsByName('pythonQ')[0].contentDocument.body.innerHTML = cmnt;
-    }
-    else $("#comment").html("スクランブル記号列：「DUMP」ボタン");
+//    if (opener && (opener.document.getElementsByName('pythonQ').length>0)) {
+//            parent.ClipDT = cmnt.slice(18);
+//            opener.document.getElementsByName('pythonQ')[0].contentDocument.body.innerHTML = cmnt;
+//    }
+//    else $("#comment").html("スクランブル記号列：「DUMP」ボタン");
     // フォーカスをあてる
     //    navigator.clipboard.writeText(sym);   
 }
