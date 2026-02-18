@@ -13,7 +13,7 @@
 	<meta name="description" content="3D Rubik's Cube Notation"/>
 	<meta name="Keywords" content="Rubik's,Cube,notation">	
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    	<link rel="manifest" href="manifest.json">     
+<!--   	<link rel="manifest" href="manifest.json">  -->
 	<script src="js/jquery.min.js"></script>
 	<SCRIPT SRC="js/navigate6.js"></SCRIPT>
 	<SCRIPT SRC="js/rotate6.js"></SCRIPT>
@@ -237,7 +237,7 @@ for (var y = 0; y < 6; y++) {
 <input type="checkbox" id="sample1check" onclick="accel(2)"><label for="sample1check"><br><br>Win<br>ker</label></div>
                   <div class="sample2Area" role="tooltip" data-microtip-size="small" data-microtip-position="bottom" aria-label="ウィンカーモードでもアニメーション">
 <input type="checkbox" id="sample2check"><label for="sample2check"><br><br>Rot<br>ate</label></div>
-		  <button class="commandb" type=button onclick="saveCube()" style="width: 56px" role="tooltip" data-microtip-position="bottom" aria-label="3x3で、色修正後の状態保存またはAIソルブを指示" data-microtip-size="medium">状態保存</button>
+		  <button class="commandb" type=button onclick="saveCube()" style="width: 56px">状態保存</button>
 		  <button class="commandb" type=button onclick="restCube()" style="width: 56px">保存再現</button>
 		  <button class="commandb" type=button onclick="setFaces()">現状のキューブ反映</button>
                   <input name="hintoff" type="checkbox" checked style="height:10px" onclick="hintOff(checked)">hint
@@ -335,15 +335,6 @@ for (var y = 0; y < 6; y++) {
              for (i in elms) if (elms[i].role) if (!sw) elms[i].style.setProperty('overflow',"hidden");
                                                else     elms[i].style.setProperty('overflow',"visible");
          }  
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').then(function(registration) {
-    // 登録成功
-    console.log('ServiceWorker の登録に成功しました。スコープ: ', registration.scope);
-  }).catch(function(err) {
-    // 登録失敗
-    console.log('ServiceWorker の登録に失敗しました。', err);
-  });
-}
 </script>
 </body>
 

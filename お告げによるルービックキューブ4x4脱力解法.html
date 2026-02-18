@@ -45,10 +45,10 @@ note[2] = "ものぐさ連帰(青橙)";
 note[3] = "ものぐさ連帰(青赤)";
 note[4] = "ものぐさ連帰(赤緑)";
 note[5] = "ものぐさ連帰(緑橙)";
-note[6] = "対角交換";
-note[7] = "くるくるムーブ２回";
+note[6] = "対角交換パーム";
+note[7] = "時刻読みパーム２回";
 note[8] = "お迎えパーム２回";
-note[9] = "最終くるくるパー厶";
+note[9] = "最終黄十字パー厶";
 
 function ptnset(i) {
     var pic = document.getElementsByName('solve')[i].getElementsByTagName('p')[0];
@@ -201,7 +201,7 @@ function openOnly(obj) {
 　固定したいパーツは行き先で隠れスポットに回転させ保存、引き戻されないように踏ん張る。<br>
 　３個以上を隠すには、上げ波の線上でさらに上に上がるように置き、引き波で元の位置に戻して、<br>
 　隠れスポットに保存したパーツと合体させる。<br>
-　ここでの結合格言は、「二連は尻付け（直ケツ）、頭は肩に浮き一つ」。
+　ここでの結合格言は、「単独は横二連作り、縦二連は足突き、肩なら一つ飛ばし突き」。
 　<a href="http://cubeland.curahome.net/4x4x4/solution1/step1/" target=_BLANK>参考リンク：</a><br>　
 　　　<img src="https://mori1-hakua.tokyo/images/4rc_1_1_041.gif" width=120>
 　　　<img src="https://mori1-hakua.tokyo/images/4rc_1_2.png" width=120>
@@ -252,12 +252,25 @@ function openOnly(obj) {
 
 <details id="renki" name="renki"><summary>
 (2)中段に(相撲の)黄ばんだマワシを作る<br>
-　慣れてくれば、(2),(3)を省略し、直接(4)へ進むことができる。（お告げF2L）<br>
-</summary>
-　・まず、中段エッジ４個を黄色を含むエッジピースで置き換える。<br>
-　　このとき「手前色」「迎え色」は無関係で、どこに置いてもよい。<br>
-</details>
+　慣れてくれば、(2),(3)を省略し、直接(4)へ進むことができる。（いきなりF2L）<br>
 　　　<img src="https://mori1-hakua.tokyo/images/CUBEy.png" width=120>
+</summary>
+(2)「いきなりF2L法」で「マワシ形成」を飛ばし（4）と併合して、（5）へ進む<br>
+　・黄色面の各エッジ４個の一つずつの側面を、中央の色に合わせる。<br>
+　・エッジの上面色の色を持つ中央側の横エッジの位置に、F回転するために、<br>
+　　一旦上面色とは反対の中央色側へU回転とF回転させ、逆Uと逆F回転で戻す。<br>
+　　F面左回転したいなら U'F'U F、F面右回転なら U F U'F' と回すことになる。<br>
+<br>
+　　もし隣のコーナーがIT結合の状態であれば、通常のスロットインを実施する。<br>
+　　なお、逆Uの回転を省略することで手数を縮められるが、隣のコーナー<br>
+　　パーツが同じ色組を含む場合は、この手順にしないとループするため、<br>
+　　判断で躓くよりも、この統一の手順を推奨している。<br>
+　　非常に運の悪いケースで、黄色面のコーナーに白を含んだものがなければ、<br>
+　　下層の白キューブを跳ね上げる。<br>
+　　(4)のコーナーお告げにうまく従い、並行しながらこのステップを実施する<br>
+　　ことで、白の跳ね上げをなくすることが出来る。エッジのお告げは無視してよい。<br>
+</details>
+　　　<img src="https://mori1-hakua.tokyo/images/CUBE1.png" width=120>
 <details><summary>
 (3)中段マワシの黄ばみを取る<br>
 　マワシが中央色に揃ったら、今後１個でも切れ次第、早めに修復する！<br>
@@ -316,7 +329,6 @@ function openOnly(obj) {
 　　・４）の先頭から始める。<br>
 
 </details>
-　　　<img src="https://mori1-hakua.tokyo/images/CUBE1.png" width=120>
 <details><summary>
 (5)パリティ検査後コーナー交換<br>　４コーナーの位置を確定させる。（４x４パリティ補正あり）<br>
 　4x4で黄色面の黄色エッジペアが偶数箇所なら、そのまま3x3手順へ突入。</summary>
@@ -349,16 +361,16 @@ function openOnly(obj) {
 　なお、この手順は、次の１５手(OLLパリティ補正と同じ)でも可能である。<br>
 　　　　"r2 B2 U2 l U2 r' U2 r U2 F2 r F2 l' B2 r2"<br>
 　　　　右２奥２☆、左下☆右下☆右上☆、前２右上,前２左上、奥２右２（左右はW輪,☆は上２）<br>
-　　ミッツオツウツ、ヒザウツ,ミサウツ,ミウウッツ、マツミウ,マツヒウ、オツミッツ<br><br>
+　　ミッツオツウツ、ヒザウツ,ミサウツ,ミアウッツ、マツミア,マツヒア、オツミッツ<br><br>
 
 　同色の面を持つコーナーポスト二つが１辺にあれば、その色の面に回転させ、隣接交換となる。<br>
-　隣接交換８割、対角交換（くるくるムーブ）１割、上層４コーナーの位置確定。無操作も有り<br>
+　隣接交換パーム８割、対角交換パーム１割、上層４コーナーの位置確定。無操作も有り<br>
 </details>
 <details><summary>
 (6)魚型十字作成（＜<a href="お告げによるルービックキューブNavi.html#fishCross" target=_BLANK>3x3解法の手段(3)</a>＞と基本的には同じ）</summary>
 　４コーナーの位置確定後、黄色面の形に沿って回転を進める。<br>
-　（横棒・３時６時ではくるくるムーブ→、その後くるくるパーム⇒で魚型）<br>
-　くるくるパーム⇒には、開始位置によって、<br>
+　（横棒・３時６時では時刻読みパーム→、その後黄十字パーム⇒で魚型）<br>
+　黄十字パーム⇒には、開始位置によって、<br>
 　　　・左廻し専用の「肩からパーム（十字横・蝶・亀手前）」と<br>
 　　　・左廻し専用の「腰からパーム（亀手開）」と<br>
 　　　・最終段階の左右廻しの「黄混血パーム」がある。<br>
@@ -366,21 +378,21 @@ function openOnly(obj) {
 　点→横棒→３時→６時→十字（コーナー交換）⇒魚型十字<br>
 　　　　　↓→→→↑↓→亀・蝶・十字　　　　⇒魚型十字<br>
 　↓　↓<br>
-　点→横棒→３時⇒黄色一面<br>　黄色一面になったとき、くるくるパームで魚型に戻した方が早い。<br>
-　ほとんどの場合が、次の３コースのくるくるムーブ後、くるくるパームとなる。<br>
-　・点ー棒ー三ー六（または、対角ムーブ省略ー棒ー三ー六）<br>
+　点→横棒→３時⇒黄色一面<br>　黄色一面になったとき、黄十字パームで魚型に戻した方が早い。<br>
+　ほとんどの場合が、次の３コースの時刻読みパーム後、黄十字パームとなる。<br>
+　・点ー棒ー三ー六（または、対角交換パーム省略ー棒ー三ー六）<br>
 　・棒ー六<br>
 　・三ー六<br>
 </details>
 　　<img src="https://mori1-hakua.tokyo/images/CUBE2.png" width=100>
 <img src="https://mori1-hakua.tokyo/images/CUBE3.png" width=100>
 <details><summary>
-　<font color=red>⇩</font>の矢印位置から、左右くるくるパームを１発仕掛ける。<br>
-　　上段側面３個に黄色を含まない面(A)の対面(B)から、くるくるパーム回転を<br>
+　<font color=red>⇩</font>の矢印位置から、黄十字パーム左右を１発仕掛ける。<br>
+　　上段側面３個に黄色を含まない面(A)の対面(B)から、黄十字パーム回転を<br>
 　　１回実施して、全面黄色にする。一気にゴールとなる場合もある。<br>
 <br>
-　　くるくるパーム（左手）:LUL’ULU2L’　　 左廻し（Xp-a）<br>
-　　　　　　　　　（右手）R’U’RU’R’U2 R  　右廻し (Xp-b)</summary>
+　　黄十字パーム（左手）:LUL’ULU2L’　　 左廻し（Xp-a）<br>
+　　　　　　　　（右手）R’U’RU’R’U2 R  　右廻し (Xp-b)</summary>
 　　<img src="https://mori1-hakua.tokyo/images/L.gif" align="absmiddle">
 → <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
 → <img src="https://mori1-hakua.tokyo/images/L-.gif" align="absmiddle">
@@ -434,7 +446,7 @@ function openOnly(obj) {
 <br>
 </div>
 <details><summary>　【参考】暗記する５つの回転手順とパリティ補正</summary>
-<details><summary>　くるくる<b>ムーブ:</b> R' U' F' U F R <button type="button" onclick="RotCopy(this)">コピー</button><br>
+<details><summary>　<b>時刻読みパーム:</b> R' U' F' U F R <button type="button" onclick="RotCopy(this)">コピー</button><br>
 　　主に、時のお告げの対応で使う。<br>
 　　上面の４コーナーの対角交換としても使われる。</summary>
 　　<img src="https://mori1-hakua.tokyo/images/R-.gif" align="absmiddle">
@@ -444,7 +456,7 @@ function openOnly(obj) {
 → <img src="https://mori1-hakua.tokyo/images/F.gif" align="absmiddle">
 → <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
 </details>
-<details><summary>　くるくる<b>パーム:</b> L U L' U L U2 L' <button type="button" onclick="RotCopy(this)">コピー</button> 　左廻し（Xp-a）<br>
+<details><summary>　<b>黄十字パーム:</b> L U L' U L U2 L' <button type="button" onclick="RotCopy(this)">コピー</button> 　左廻し（Xp-a）<br>
 　　　　　　　　　 :<span> R' U' R U' R' U' 2R <button type="button" onclick="RotCopy(this)">コピー</button> 右廻し (Xp-b)</span></summary>
 　　<img src="https://mori1-hakua.tokyo/images/L.gif" align="absmiddle">
 → <img src="https://mori1-hakua.tokyo/images/U.gif" align="absmiddle">
@@ -463,7 +475,7 @@ function openOnly(obj) {
 → <img src="https://mori1-hakua.tokyo/images/R.gif" align="absmiddle">
 <br>
 　　開始位置によって、左廻し専用の「肩からパーム」「腰からパーム」<br>
-　　そして最終段階の左右廻し「最終パーム」があり、すべてくるくるパームである。
+　　そして最終段階の左右廻し「最終パーム」があり、すべて黄十字パームである。
 </details>
 <details><summary>　隣接交換:<span> L R' U' R U L' U' R' U R <button type="button" onclick="RotCopy(this)">コピー</button></span></summary>
 　　隣接２個のコーナー交換が必要になっていれば、ここを右側に置いて次で確定する。<br>

@@ -17,23 +17,20 @@
 	<script src="js/jquery.min.js"></script>
 	<SCRIPT SRC="js/navigate6.js"></SCRIPT>
 	<SCRIPT SRC="js/rotate6.js"></SCRIPT>
-	<SCRIPT SRC="js/revelator7.js"></SCRIPT>
+	<SCRIPT SRC="js/revelator6.js"></SCRIPT>
 	<SCRIPT SRC="js/dragRotation.js"></SCRIPT>
 	<script src="js/colorPick.js"></script>
-	<SCRIPT SRC="js/min2phase.js"></SCRIPT><!-- added 2025.12 -->
       <link rel="stylesheet" href="https://unpkg.com/microtip/microtip.css">
 	<link rel="stylesheet" type="text/css" href="css/faceStyle.css" />
 	<link rel="stylesheet" type="text/css" href="css/colorPick.css" />
 	<link rel="stylesheet" type="text/css" href="css/RBstyle3.css" />
 	<link rel="stylesheet" type="text/css" href="css/RBstyle43.css" id="dynaCSS" />
-      <style>
-       </style>
 	<title>3D Rubik's Cube 2x2 - 8x8</title>
 </head>
 <body>
    <div class="flex_test-box">
     　<div class="flex_test-item">
-	<img src="images/otugeTitle7.png" width=220 onDBLclick="location.href='index6.html'"  title="2x2-4x4 ⇔ 5x5-8x8"><br>
+	<img src="images/otugeTitle.png" width=220 onDBLclick="location.href='index.html'"  title="2x2-4x4 ⇔ 5x5-8x8"><br>
      <span id="lowBtn" style="display:block;"> 
         <span class="toggle_button">
           <input id="toggle2" class="toggle_input" type='radio' name="cube_T" onclick="SelCubeT(this.id.slice(-1))"/>
@@ -169,7 +166,7 @@
       </div><!-- end of flex_test-item -->
       <div class="flex_test-item">
 	<div id="display" class="is-hidden" width="240">
-          <div><h2>現状のキューブの色反映</h2></div>
+          <div><h2>実キューブの色の反映</h2></div>
           <p align="left" width="240">　　<span id="yp">＋Ｙ</span>回<span id="ym">転－</span>　<span id="xp">＋Ｘ</span>回<span id="xm">転－</span></p><br>
           <div id="game"></div>
           <div id="gamePad"></div><!-- Height fixed -->
@@ -183,7 +180,7 @@ for (var y = 0; y < 6; y++) {
 	document.write('</div>');
 }
 </script>
-     <script type="text/javascript" src="js/faceMain7.js"></script>
+     <script type="text/javascript" src="js/faceMain6.js"></script>
 
            <button onclick="start()" id="standby" style="font-size: large; background-color: orange">撮像</button>
            <button onclick="stop()" style="font-size: large; background-color: yellow">修正</button>
@@ -192,7 +189,7 @@ for (var y = 0; y < 6; y++) {
       </div><!-- display hidden -->
 
 	<div class="commands" align=left><a href="お告げによるルービックキューブ解法.html" target="_blank">お告げソルブ解説</a>
-　<a href="V6拡張.pdf" target="_blank" title="V6機能">Navi V7.5</a> <img src="images/home.gif" width=18 align=bottom onclick='window.open("お告げナビのインストールについて.pdf","_blank")' title="インストール">
+　<a href="V6拡張.pdf" target="_blank" title="V6機能">Navi V6.4</a> <img src="images/home.gif" width=18 align=bottom onclick='window.open("お告げナビのインストールについて.pdf","_blank")' title="インストール">
 	</div><!-- end of commands -->
         <br>
         <div class="commands" id="statusBlk" style="border: 1px solid gray; width: 256px; height: 220px; display: none; color:green;"><span style="line-height:160%;">ソルブ進行状況表</span><br><!-- 進行状況表　height: 220px;/168px -->
@@ -205,13 +202,13 @@ for (var y = 0; y < 6; y++) {
 		<div class="statusExplain" >第二層以下構成:</div>
 	</span>
 		<button class="statusL" type=button id="proc00" disabled>&nbsp;白クロス形成&nbsp;</button>
-		<button class="statusL" type=button id="proc04" disabled>&nbsp;下層単独移動&nbsp;</button>
-		<button class="statusL" type=button id="proc16" disabled>&nbsp;F2L&nbsp;準備/回転</button>
+		<button class="statusL" type=button id="proc04" disabled>&nbsp;エッジ中移動&nbsp;</button>
+		<button class="statusL" type=button id="proc16" disabled>&nbsp;いきなり F2L&nbsp;</button>
 		<div class="statusExplain" >上層枠+魚十字構成:</div>
 		<button class="statusL" type=button id="proc18" disabled>四コーナー整合</button>
 		<button class="statusL" type=button id="proc20" disabled>時のお告げ回転</button>
 		<button class="statusL" type=button id="proc24" disabled>黄十字&nbsp;魚形成</button>
-		<div class="statusExplain" >上位層整合:　　　<span id="aveTurns" style="font-weight:normal;">Moves</span></div>
+		<div class="statusExplain" >上位層整合:</div>
 		<button class="statusL" type=button id="proc26" disabled>最上層黄色一面</button>
 		<button class="statusL" type=button id="proc28" disabled>HZ交換&nbsp;Parity</button>
 		<button class="statusL" type=button id="proc32" disabled>エッジ移動完成</button>
@@ -237,10 +234,9 @@ for (var y = 0; y < 6; y++) {
 <input type="checkbox" id="sample1check" onclick="accel(2)"><label for="sample1check"><br><br>Win<br>ker</label></div>
                   <div class="sample2Area" role="tooltip" data-microtip-size="small" data-microtip-position="bottom" aria-label="ウィンカーモードでもアニメーション">
 <input type="checkbox" id="sample2check"><label for="sample2check"><br><br>Rot<br>ate</label></div>
-		  <button class="commandb" type=button onclick="saveCube()" style="width: 56px" role="tooltip" data-microtip-position="bottom" aria-label="3x3で、色修正後の状態保存またはAIソルブを指示" data-microtip-size="medium">状態保存</button>
+		  <button class="commandb" type=button onclick="saveCube()" style="width: 56px">状態保存</button>
 		  <button class="commandb" type=button onclick="restCube()" style="width: 56px">保存再現</button>
-		  <button class="commandb" type=button onclick="setFaces()">現状のキューブ反映</button>
-                  <input name="hintoff" type="checkbox" checked style="height:10px" onclick="hintOff(checked)">hint
+		  <button class="commandb" type=button onclick="setFaces()">実キューブ取り込み</button><br>
                   <input name="logdisp" type="button" value="DUMP" style="width: 50px" onclick="dumpRot()">
                   <input name="logdisp" type="button" value="COPY" style="width: 50px" onclick="copyRot()">
                 </div>
@@ -314,15 +310,15 @@ for (var y = 0; y < 6; y++) {
 	<form name=opt>
 		<div class="commandExplain" role="tooltip" data-microtip-position="bottom" aria-label="ツールチップの参照は、ボタンを長押ししてください">マクロ機能回転:&nbsp;(七つ道具)</div>
 		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;R U R' U'&quot,&quot;R U R' U' R U R' U' R U R' U'&quot;,opt.sayu.value)" aria-label="選択の正逆セクシームーブ３回" data-microtip-size="small">SX3Ｍ</div>
-		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;L U L' U L U2 L' U&quot;,&quot;R' U' R U' R' U' 2R U' R U&quot;,opt.sayu.value)" aria-label="選択の左右黄十字パーム">LR　&#x21bb;&#x21bb;</div>
-		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;M2 U M U2 M' U M2&quot;,&quot;M2 U' M U2 M' U' M2&quot;,opt.sayu.value)" aria-label="選択の左右エッジお迎え(Uパーム) 　　ヒント：奥経由で前へ" data-microtip-size="medium">LR迎</div>
-		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;L R' U' R U L' U' R' U R&quot;,&quot;u' R U R' u&quot;,opt.sayu.value)" aria-label="右側二隅の隣接交換パーム ヒント：LruRUlurUR　　　　　　左：横エッジ交換" data-microtip-size="medium">隣換</div>
-		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;M2 U M2 U2 M2 U M2&quot;)" aria-label="奥迎えパーム(Hパーム) ヒント：深く深く次へ深く深く" data-microtip-size="medium">十換</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;L U L' U L U2 L' U&quot;,&quot;R' U' R U' R' U' 2R U' R U&quot;,opt.sayu.value)" aria-label="選択の左右くるくるパーム">LR　&#x21bb;&#x21bb;</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;M2 U M U2 M' U M2&quot;,&quot;M2 U' M U2 M' U' M2&quot;,opt.sayu.value)" aria-label="選択の左右エッジお迎え(Uパーム) 　　ヒント：奥から周って前へ" data-microtip-size="medium">LR迎</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;L R' U' R U L' U' R' U R&quot;,&quot;u' R U R' u&quot;,opt.sayu.value)" aria-label="右側二隅のコーナー隣接交換 ヒント：LruRUlurUR　　　　　　左：横エッジ交換" data-microtip-size="medium">隣換</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;M2 U M2 U2 M2 U M2&quot;)" aria-label="十字エッジ交換(Hパーム) ヒント：深く深く次へ深く深く" data-microtip-size="medium">十換</div>
 		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;M' U M2 U M2 U M' U2 M2 U'&quot;)" aria-label="斜め二組エッジ交換(Zパーム) ヒント：浅く深く深く浅く次へ深く" data-microtip-size="small">斜換</div>
-		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;R' U' F' U F R&quot;,&quot;R' U' F' U F R U' R' U' F' U F R&quot;,opt.sayu.value)" aria-label="対角交換パーム コーナーの対角交換で使い、uを挟み２回で時計パーム３へ" data-microtip-size="small">&#x21bb;&#x21bb;Ｍ</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;R' U' F' U F R&quot;,&quot;R' U' F' U F R U' R' U' F' U F R&quot;,opt.sayu.value)" aria-label="くるくるムーブ コーナーの対角交換でも使え、uを挟み２回で３時ムーブへ" data-microtip-size="small">&#x21bb;&#x21bb;Ｍ</div>
                 <div class="rotateMac2" style="width: 60px;" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;r2 B2 U2 l U2 r' U2 r U2 F2 r F2 l' B2 r2&quot;,&quot;Cr2 B2 U2 Cl U2 Cr' U2 Cr U2 F2 Cr F2 Cl' B2 Cr2&quot;,opt.sayu.value)" aria-label="OLLパリティ補正 　　　覚え方：ミッツオツウツ、ヒザウツ,ミサウツ,ミアウッツ、マツミア,マツヒア、オツミッツ　左：内輪補正" data-microtip-size="medium">Ｏ<br>パリティ</div>
                 <div class="rotateMac2" style="width: 60px;" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;l2 B2 U2 l2 U2 B2 l2&quot;,&quot;Cl'2 B2 U2 Cl'2 U2 B2 Cl'2&quot;,opt.sayu.value)" aria-label="PLLパリティ補正 　　　覚え方：１８０°でルブールーブル　　縦方向のエッジ交換にも使う" data-microtip-size="medium">Ｐ<br>パリティ</div>
-		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;F R U R' U' F' U' R' U' F' U F R&quot;)" aria-label="時計読み針無時のムーブ 　ヒント：FRUruf 時計パーム3x3" data-microtip-size="medium">零Ｍ</div>
+		<div class="rotateMacro" role="tooltip" data-microtip-position="bottom" onclick="RotCopyX(this,&quot;F R U R' U' F' U' R' U' F' U F R&quot;)" aria-label="時計読み針なし時のムーブ ヒント：FRUruf対角交換６時ムーブ" data-microtip-size="medium">零Ｍ</div>
 <div class="commandExplain"> Y方向:<input name="noy" type="checkbox" role="tooltip" aria-label="自明なアニメ抑止・　　3x3時のY回転持替無し" data-microtip-size="medium">持替止　操作:<input name="sayu" type="radio" value="L">左 <input name="sayu" type="radio" value="R" checked>右</div>
 	</form></div><!-- end of commands -->
 	</div><!-- end of result -->
@@ -330,11 +326,6 @@ for (var y = 0; y < 6; y++) {
 </div><!-- end of flex_test-box -->
 	<br><br>
 <script>
-         function hintOff(sw=true) {
-             let i, elms = document.querySelectorAll(".commandb,.commandExplain,.rotateMacro,.rotateMac2,.sample1Area,.sample2Area"); 
-             for (i in elms) if (elms[i].role) if (!sw) elms[i].style.setProperty('overflow',"hidden");
-                                               else     elms[i].style.setProperty('overflow',"visible");
-         }  
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').then(function(registration) {
     // 登録成功
