@@ -35,7 +35,8 @@ p{
     color: white;
     cursor: pointer;/*カーソルをポインターに変える*/
 }
-#game{
+#game,
+#gamePad {
     margin-right: auto;/* 中央寄せ */
     margin-left: auto;/* 中央寄せ */
     display: flex;

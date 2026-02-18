@@ -3,7 +3,7 @@
   perspective: 900px;
   perspective-origin: 50% 0%;
   display: block;
-  height: 94px;
+  height:100px;
   width: 102px;
 }
 .cube {

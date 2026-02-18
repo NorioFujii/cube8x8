@@ -3,8 +3,8 @@
   perspective: 900px;
   perspective-origin: 50% 0%;
   display: block;
-  height: 80px;
-  width: 88px;
+  height:100px;
+  width:  88px;
 }
 .cube {
         cursor: pointer;

@@ -95,6 +95,8 @@ body {
   background-color: green;
 }
 .commandb {
+  --hint: visible;
+    overflow: var(--hint);
   padding: 3px 1px;
   float: left;
   font-size: 12px;
@@ -107,6 +109,7 @@ body {
   background-color: #ce4b42;
 }
 .commandb:hover {
+    overflow: var(--hint);
     background-color: #333;
 }
 button:disabled {
@@ -139,6 +142,8 @@ button:disabled {
   font-weight: bold !important;
 }
 .commandExplain {
+  --hint: visible;
+    overflow: var(--hint);
   border: none !important;
   clear: both !important;
   width: 100% !important;
